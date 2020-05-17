@@ -110,29 +110,29 @@ class: inverse, center, middle
 
 ## 建模範例資料 - 載入
 
-- `mlbench`套件`PimaIndiansDiabetes2`資料集
-- Outcome為是否有糖尿病diabetes
-- 變數可輸入`?PimaIndiansDiabetes2`查看
+- `mlbench`套件內附的`PimaIndiansDiabetes2`資料集
+- Outcome為是否有糖尿病  **diabetes**欄位
+- 可輸入`?PimaIndiansDiabetes2`查看所有欄位變數
 
 ```{r}
 library(mlbench)
-data("PimaIndiansDiabetes2")
+data("PimaIndiansDiabetes2") # 載入資料
 ```
 ---
 
 ## 建模範例資料 - 初探
 
-- 看一下各資料的型態跟資料筆數
-- 發現有不少空值
-
+- 用`glimpse()`函數看一下各資料的**型態**跟資料**筆數**
 ```{r}
 glimpse(PimaIndiansDiabetes2)
 ```
+- 發現有不少空值，要決定如何處理
+
 ---
 
 ## 建模範例資料 - Outcome比例
 
-- 在刪除不全的資料前，先看有糖尿病diabetes跟沒有糖尿病的人數與比例
+- 在處理空值前，先看**diabetes**欄位中有病跟沒病的人數與比例
 
 ```{r}
 PimaIndiansDiabetes2 %>% 
@@ -140,19 +140,19 @@ PimaIndiansDiabetes2 %>%
   mutate(prop = n/sum(n))
 ```
 
-- 大概是65:35，有些不平均但還行
+- 大概是65:35，有些不平均，但還行
 
 ---
-## 刪除遺漏值
+## 刪除空（遺漏）值
 
-- 臨床研究通常會刪除有缺值的資料
+- 臨床研究通常會刪除有**缺值**的資料
 - 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
 - 某些演算法不能用有空值的資料建模
 
 
 ```{r}
 PimaIndiansDiabetes2<-
-  PimaIndiansDiabetes2 %>% 
+  PimaIndiansDiabetes2 %>% #<<
   filter(complete.cases(PimaIndiansDiabetes2)) 
 ```
 
@@ -160,7 +160,7 @@ PimaIndiansDiabetes2<-
 ---
 ## 刪除遺漏值
 
-- 臨床研究通常會刪除有缺值的資料
+- 臨床研究通常會刪除有**缺值**的資料
 - 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
 - 某些演算法不能用有空值的資料建模
 
@@ -202,7 +202,7 @@ PimaIndiansDiabetes2<-
 ```
 
 - `filter()`為`dplyr`套件的功能，可針對資料列(row)做子集
-- `complete.cases()`用來辨識是否為完整資料，若沒有空值，回傳TRUE
+- 用`complete.cases()`辨識是否為完整資料，若沒有空值，回傳TRUE
 
 ---
 ## 刪除遺漏值後 - Outcome比例
@@ -221,7 +221,14 @@ class: inverse, center, middle
 # 敘述性統計
 
 ---
+## 醫學資料分析中的敘述性統計
 
+
+- 通常是論文中的第一個表格
+```{r echo=FALSE,out.height="350px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneExample.png")
+```
+[Source](https://www.sciencedirect.com/science/article/abs/pii/S1386505618311213)
 ---
 ## 單變量分析
 
@@ -466,6 +473,9 @@ registerDoParallel(cl)
 - trees: 建模要用幾棵樹
 
 在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用交叉驗證法(Cross Validation)來調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
+```{r eval=F}
+install.packages("ranger")
+```
 
 ```{r}
 rf_mod <- 
@@ -813,15 +823,6 @@ dojutsu = c('地爆天星', '天照', '加具土命', '神威', '須佐能乎', 
 grep('天', dojutsu, value = TRUE)
 ```
 
----
-
-# R Plots
-
-```{r cars, fig.height=4, dev='svg'}
-par(mar = c(4, 4, 1, .1))
-plot(cars, pch = 19, col = 'darkgray', las = 1)
-abline(fit, lwd = 2)
-```
 
 ---
 
