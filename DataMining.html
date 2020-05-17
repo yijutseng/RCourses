@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Case Studies in Data Mining with R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Yi-Ju Tseng" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+    <script src="libs/jquery-1.12.4/jquery.min.js"></script>
+    <link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+    <script src="libs/leaflet-1.3.1/leaflet.js"></script>
+    <link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+    <script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+    <script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+    <link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+    <script src="libs/leaflet-binding-2.0.3/leaflet.js"></script>
+    <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding-0.13/datatables.js"></script>
+    <link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+    <script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Case Studies in Data Mining with R
+### Yi-Ju Tseng
+### Chung Gung University
+### 2020/05/15
+
+---
+
+class: inverse, center, middle
+# Reviews
+---
+
+## R and RStudio
+
+[R](https://cloud.r-project.org/) : Core (engine)
+
+&lt;img src="https://www.teslarati.com/wp-content/uploads/2018/07/model-3-drivetrain-1.jpg" height="400px" style="display: block; margin: auto;" /&gt;
+
+[Source](https://www.teslarati.com/tesla-patent-more-efficient-electric-motors/)
+
+---
+## R and RStudio
+
+[RStudio](https://www.rstudio.com/products/rstudio/download/#download) : IDE (dashboard)
+
+&lt;img src="https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/dashboard.jpg" height="400px" style="display: block; margin: auto;" /&gt;
+
+[Source](https://www.theverge.com/2015/3/19/8260295/tesla-user-interface-redesign-concept)
+
+---
+
+## How to use RStudio for the first time
+.pull-left[
+4 Blocks in RStudio：
+- Source editor  -&gt; edit the codes here
+- Console -&gt; get the results here
+]
+.pull-right[
+&lt;/br&gt;
+- Environment/...
+- File/Figure/...
+]
+
+&lt;img src="https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/RStudio.png" height="350px" style="display: block; margin: auto;" /&gt;
+
+---
+## R and R Packages
+
+R : Core (iPhone)
+
+&lt;img src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-xr-white-select-201809?wid=940&amp;hei=1112&amp;fmt=png-alpha&amp;qlt=80&amp;.v=1551226036668" height="400px" style="display: block; margin: auto;" /&gt;
+
+---
+## R and R Packages
+
+R Packages : APP
+
+&lt;img src="https://3c.yipee.cc/wp-content/uploads/2019/06/a7ffbaa3df50d7cafe6801a8a8d7a3bf-620x320.jpg" height="400px" style="display: block; margin: auto;" /&gt;
+
+[Source](https://www.apple.com/)
+
+---
+## Install and Use Packages
+
+- Install
+
+
+```r
+*install.packages("tidymodels")
+library(tidymodels)
+```
+
+--
+
+
+- Use
+
+
+```r
+install.packages("tidymodels")  
+*library(tidymodels)
+```
+
+
+---
+## Pipe %&gt;%
+
+---
+
+class: inverse, center, middle
+
+# Get Started - Data Import
+
+---
+
+## 建模範例資料 - 載入
+
+- `mlbench`套件`PimaIndiansDiabetes2`資料集
+- Outcome為是否有糖尿病diabetes
+- 變數可輸入`?PimaIndiansDiabetes2`查看
+
+
+```r
+library(mlbench)
+data("PimaIndiansDiabetes2")
+```
+---
+
+## 建模範例資料 - 初探
+
+- 看一下各資料的型態跟資料筆數
+- 發現有不少空值
+
+
+```r
+glimpse(PimaIndiansDiabetes2)
+```
+
+```
+## Rows: 768
+## Columns: 9
+## $ pregnant &lt;dbl&gt; 6, 1, 8, 1, 0, 5, 3, 10, 2, ...
+## $ glucose  &lt;dbl&gt; 148, 85, 183, 89, 137, 116, ...
+## $ pressure &lt;dbl&gt; 72, 66, 64, 66, 40, 74, 50, ...
+## $ triceps  &lt;dbl&gt; 35, 29, NA, 23, 35, NA, 32, ...
+## $ insulin  &lt;dbl&gt; NA, NA, NA, 94, 168, NA, 88,...
+## $ mass     &lt;dbl&gt; 33.6, 26.6, 23.3, 28.1, 43.1...
+## $ pedigree &lt;dbl&gt; 0.627, 0.351, 0.672, 0.167, ...
+## $ age      &lt;dbl&gt; 50, 31, 32, 21, 33, 30, 26, ...
+## $ diabetes &lt;fct&gt; pos, neg, pos, neg, pos, neg...
+```
+---
+
+## 建模範例資料 - Outcome比例
+
+- 在刪除不全的資料前，先看有糖尿病diabetes跟沒有糖尿病的人數與比例
+
+
+```r
+PimaIndiansDiabetes2 %&gt;% 
+  count(diabetes) %&gt;% 
+  mutate(prop = n/sum(n))
+```
+
+```
+## # A tibble: 2 x 3
+##   diabetes     n  prop
+##   &lt;fct&gt;    &lt;int&gt; &lt;dbl&gt;
+## 1 neg        500 0.651
+## 2 pos        268 0.349
+```
+
+- 大概是65:35，有些不平均但還行
+
+---
+## 刪除遺漏值
+
+- 臨床研究通常會刪除有缺值的資料
+- 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
+- 某些演算法不能用有空值的資料建模
+
+
+
+```r
+PimaIndiansDiabetes2&lt;-
+  PimaIndiansDiabetes2 %&gt;% 
+  filter(complete.cases(PimaIndiansDiabetes2)) 
+```
+
+
+---
+## 刪除遺漏值
+
+- 臨床研究通常會刪除有缺值的資料
+- 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
+- 某些演算法不能用有空值的資料建模
+
+
+
+```r
+PimaIndiansDiabetes2&lt;-
+  PimaIndiansDiabetes2 %&gt;% 
+* filter(complete.cases(PimaIndiansDiabetes2))
+```
+
+- `filter()`為`dplyr`套件的功能，可針對資料列(row)做子集
+
+--
+
+.pull-left[
+
+ ID  Name 
+---  -----
+  1  a    
+  2  b    
+  3  c    
+]
+--
+.pull-right[
+
+ ID  Name 
+---  -----
+  1  a    
+  3  c    
+]
+
+---
+## 刪除遺漏值
+
+- 臨床研究通常會刪除有缺值的資料
+- 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
+- 某些演算法不能用有空值的資料建模
+
+
+
+```r
+PimaIndiansDiabetes2&lt;-
+  PimaIndiansDiabetes2 %&gt;% 
+* filter(complete.cases(PimaIndiansDiabetes2))
+```
+
+- `filter()`為`dplyr`套件的功能，可針對資料列(row)做子集
+- `complete.cases()`用來辨識是否為完整資料，若沒有空值，回傳TRUE
+
+---
+## 刪除遺漏值後 - Outcome比例
+
+刪除空後資料筆數有些微改變，但大概還是6x:3x的比例
+
+
+```r
+PimaIndiansDiabetes2 %&gt;% 
+  count(diabetes) %&gt;% 
+  mutate(prop = n/sum(n))
+```
+
+```
+## # A tibble: 2 x 3
+##   diabetes     n  prop
+##   &lt;fct&gt;    &lt;int&gt; &lt;dbl&gt;
+## 1 neg        262 0.668
+## 2 pos        130 0.332
+```
+
+---
+class: inverse, center, middle
+
+# 敘述性統計
+
+---
+
+---
+## 單變量分析
+
+
+
+```r
+library(tableone)
+tableone&lt;-
+  CreateTableOne(data=PimaIndiansDiabetes2)
+print(tableone)
+```
+
+```
+##                       
+##                        Overall        
+##   n                       392         
+##   pregnant (mean (SD))   3.30 (3.21)  
+##   glucose (mean (SD))  122.63 (30.86) 
+##   pressure (mean (SD))  70.66 (12.50) 
+##   triceps (mean (SD))   29.15 (10.52) 
+##   insulin (mean (SD))  156.06 (118.84)
+##   mass (mean (SD))      33.09 (7.03)  
+##   pedigree (mean (SD))   0.52 (0.35)  
+##   age (mean (SD))       30.86 (10.20) 
+##   diabetes = pos (%)      130 (33.2)
+```
+
+---
+## 單變量分析 - 依outcome分組
+
+
+```r
+library(tableone)
+tableone&lt;-
+  CreateTableOne(data=PimaIndiansDiabetes2,
+*                strata = "diabetes")
+print(tableone)
+```
+
+```
+##                       Stratified by diabetes
+##                        neg            
+##   n                       262         
+##   pregnant (mean (SD))   2.72 (2.62)  
+##   glucose (mean (SD))  111.43 (24.64) 
+##   pressure (mean (SD))  68.97 (11.89) 
+##   triceps (mean (SD))   27.25 (10.43) 
+##   insulin (mean (SD))  130.85 (102.63)
+##   mass (mean (SD))      31.75 (6.79)  
+##   pedigree (mean (SD))   0.47 (0.30)  
+##   age (mean (SD))       28.35 (8.99)  
+##   diabetes = pos (%)        0 (0.0)   
+##                       Stratified by diabetes
+##                        pos             p     
+##   n                       130                
+##   pregnant (mean (SD))   4.47 (3.92)   &lt;0.001
+##   glucose (mean (SD))  145.19 (29.84)  &lt;0.001
+##   pressure (mean (SD))  74.08 (13.02)  &lt;0.001
+##   triceps (mean (SD))   32.96 (9.64)   &lt;0.001
+##   insulin (mean (SD))  206.85 (132.70) &lt;0.001
+##   mass (mean (SD))      35.78 (6.73)   &lt;0.001
+##   pedigree (mean (SD))   0.63 (0.41)   &lt;0.001
+##   age (mean (SD))       35.94 (10.63)  &lt;0.001
+##   diabetes = pos (%)      130 (100.0)  &lt;0.001
+##                       Stratified by diabetes
+##                        test
+##   n                        
+##   pregnant (mean (SD))     
+##   glucose (mean (SD))      
+##   pressure (mean (SD))     
+##   triceps (mean (SD))      
+##   insulin (mean (SD))      
+##   mass (mean (SD))         
+##   pedigree (mean (SD))     
+##   age (mean (SD))          
+##   diabetes = pos (%)
+```
+
+---
+## 單變量分析 - 產生方便貼到Excel的表格
+
+
+```r
+library(tableone)
+tableone&lt;-
+  CreateTableOne(data=PimaIndiansDiabetes2,
+                 strata = "diabetes")
+*print(tableone,quote = T)
+```
+
+```
+##                         "Stratified by diabetes"
+##  ""                      "neg"            
+##   "n"                    "   262"         
+##   "pregnant (mean (SD))" "  2.72 (2.62)"  
+##   "glucose (mean (SD))"  "111.43 (24.64)" 
+##   "pressure (mean (SD))" " 68.97 (11.89)" 
+##   "triceps (mean (SD))"  " 27.25 (10.43)" 
+##   "insulin (mean (SD))"  "130.85 (102.63)"
+##   "mass (mean (SD))"     " 31.75 (6.79)"  
+##   "pedigree (mean (SD))" "  0.47 (0.30)"  
+##   "age (mean (SD))"      " 28.35 (8.99)"  
+##   "diabetes = pos (%)"   "     0 (0.0) "  
+##                         "Stratified by diabetes"
+##  ""                      "pos"            
+##   "n"                    "   130"         
+##   "pregnant (mean (SD))" "  4.47 (3.92)"  
+##   "glucose (mean (SD))"  "145.19 (29.84)" 
+##   "pressure (mean (SD))" " 74.08 (13.02)" 
+##   "triceps (mean (SD))"  " 32.96 (9.64)"  
+##   "insulin (mean (SD))"  "206.85 (132.70)"
+##   "mass (mean (SD))"     " 35.78 (6.73)"  
+##   "pedigree (mean (SD))" "  0.63 (0.41)"  
+##   "age (mean (SD))"      " 35.94 (10.63)" 
+##   "diabetes = pos (%)"   "   130 (100.0) "
+##                         "Stratified by diabetes"
+##  ""                      "p"      "test"
+##   "n"                    ""       ""    
+##   "pregnant (mean (SD))" "&lt;0.001" ""    
+##   "glucose (mean (SD))"  "&lt;0.001" ""    
+##   "pressure (mean (SD))" "&lt;0.001" ""    
+##   "triceps (mean (SD))"  "&lt;0.001" ""    
+##   "insulin (mean (SD))"  "&lt;0.001" ""    
+##   "mass (mean (SD))"     "&lt;0.001" ""    
+##   "pedigree (mean (SD))" "&lt;0.001" ""    
+##   "age (mean (SD))"      "&lt;0.001" ""    
+##   "diabetes = pos (%)"   "&lt;0.001" ""
+```
+
+---
+## 單變量分析 - Excel處理步驟
+
+---
+class: inverse, center, middle
+
+# 開始建模
+
+---
+
+## 訓練/調整與驗證模型效能策略
+
+JAMA在2019年刊登一篇有趣的文章，名稱為How to Read Articles That Use Machine Learning - Users’ Guides to the Medical Literature [下載](https://jamanetwork.com/journals/jama/fullarticle/2754798)，內文中有提到在機器學習時代，如何建立與預測模型，跟之前又有什麼不同，並用下圖來解釋差異
+
+![](https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)&lt;!-- --&gt;
+[圖片來源](https://jamanetwork.com/journals/jama/fullarticle/2754798)
+
+
+在所謂的"非"機器學習模型(圖上半部)，通常可分訓練組與測試組，在作者定義為Development set和Validation set，重要的概念是訓練模型時，一定要記得先把測試組資料分出來，不可以用到這部分資料來訓練模型，最後才能得到真實的預測結果 (完全沒偷看答案的意思)。
+
+在圖下半部，作者將此法命名為**3-step process**，主要差異是在訓練模型時多了一組**參數調整資料集**，原因是因為在多種機器學習模型中，有可調整的參數，在圖中稱為Hyperparameters，為了讓調整效果更好，會將訓練組再切分成小組，用來決定**最佳參數**，決定好以後，才用所有訓練組資料搭配最佳參數訓練模型，最後再用測試組做測試。
+
+以下用邏輯迴歸歸Logistic Regression示範此圖上半部**不調參數**的作法，以及用隨機森林Random Forest示範此圖下半部**需要調整參數**的作法。
+
+---
+# 訓練組、測試組資料分割
+
+不管要不要調參數，都需要分割訓練組與測試組，因此在進入兩個範例前，先將訓練組與測試組切好。
+
+用`initial_split()`函數將資料分成訓練組與測試組，第一個參數放資料，第二個參數`prop`放訓練組測試組比例，第三個參數`strata`放分組抽樣依據。需要設定分組抽樣依據是因為若是整批資料隨機抽樣，很有可能在測試組或是訓練組會少一整個組別的資料(剛好都沒抽到的意思)，所以就分組，個別抽某個比例的人當訓練組，剩下的就當測試組。切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
+
+這邊要特別注意的是，因為`initial_split()`函數有隨機的概念，為了讓每次的實驗結果相同，我們會在有隨機事件前設定seed，作為隨機的依據，讓隨機每次都一樣，才不會每次跑都是不一樣的結果，這樣就無法產生可重複的實驗結果。
+
+
+```r
+set.seed(123)
+splits&lt;- initial_split(PimaIndiansDiabetes2, 
+                       prop=(3/4),
+                       strata = diabetes)
+DM_train&lt;- training(splits)
+DM_test&lt;- testing(splits)
+```
+
+分組完後，查看訓練組的生病比例
+
+```r
+DM_train %&gt;% 
+  count(diabetes) %&gt;% 
+  mutate(prop = n/sum(n))
+```
+
+```
+## # A tibble: 2 x 3
+##   diabetes     n  prop
+##   &lt;fct&gt;    &lt;int&gt; &lt;dbl&gt;
+## 1 neg        197 0.668
+## 2 pos         98 0.332
+```
+
+查看測試組的生病比例
+
+```r
+DM_test %&gt;% 
+  count(diabetes) %&gt;% 
+  mutate(prop = n/sum(n))
+```
+
+```
+## # A tibble: 2 x 3
+##   diabetes     n  prop
+##   &lt;fct&gt;    &lt;int&gt; &lt;dbl&gt;
+## 1 neg         65 0.670
+## 2 pos         32 0.330
+```
+
+---
+# 建立資料前處理“食譜”
+
+資料前處理也是建立兩種模型都必須經歷的方法，因此提到最前方說明，前處理有很多方法，包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等。
+
+首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`，要注意這邊只能用**訓練組資料**，不能用全部的資料。公式的意思是用`~`前方的`diabetes`當成outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features，為預測基礎)。
+
+完成模型公式與資料設定後，就開始逐一加上想要做的資料前處理方法，在這邊列舉幾項我認為以此案例可能需要做的前處理
+
+- `step_naomit(everything(), skip = TRUE)` 如果沒有在一開始將NA資料刪掉，通常要去除NA值
+- `step_rose(diabetes)` 其實這個資料有病沒病的人沒差太多，只是呈現一下可以在此步驟設定oversampleing或是undersampling，這邊是指使用ROSE作為oversampling的演算法
+- `step_dummy(all_nominal(), -all_outcomes())` 將所有的類別變項轉成虛擬變項，除了Outcome以外
+- `step_zv(all_predictors())` 若有變項都是一樣的值，刪掉。舉例來說，若是整個資料都是女性，那性別欄位就不用拿來當作features了
+- `step_normalize(all_predictors())` 將所有數值變項正規化
+
+還有很多其他的前處理方法，可以參考`recipe()`函數的[說明文件](https://recipes.tidymodels.org/reference/recipe.html)
+
+
+```r
+gen_recipe &lt;- 
+  recipe(diabetes ~ ., data = DM_train) %&gt;% 
+  step_dummy(all_nominal(), -all_outcomes()) %&gt;% 
+  step_zv(all_predictors()) %&gt;% 
+  step_normalize(all_predictors())
+summary(gen_recipe)
+```
+
+```
+## # A tibble: 9 x 4
+##   variable type    role      source  
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+## 1 pregnant numeric predictor original
+## 2 glucose  numeric predictor original
+## 3 pressure numeric predictor original
+## 4 triceps  numeric predictor original
+## 5 insulin  numeric predictor original
+## 6 mass     numeric predictor original
+## 7 pedigree numeric predictor original
+## 8 age      numeric predictor original
+## 9 diabetes nominal outcome   original
+```
+
+---
+class: inverse, center, middle
+
+# 邏輯迴歸Logistic Regression模型建立與效能評估範例
+
+---
+## Step 1 設定用邏輯迴建立模型
+
+這邊以邏輯迴歸為例，用`logistic_reg()`函數與`set_engine("glm")`設定模型建立演算法為邏輯迴歸
+
+
+```r
+lr_mod &lt;- 
+  logistic_reg() %&gt;% 
+  set_engine("glm")
+```
+---
+## Step 2 設定建模流程workflow
+
+workflow將建模 (model)與資料前處理方法 (recipe)串成單一工作流程workflow
+
+
+```r
+lr_wflow &lt;- 
+  workflow() %&gt;% 
+  add_model(lr_mod) %&gt;% 
+  add_recipe(gen_recipe)
+lr_wflow
+```
+
+```
+## == Workflow ====================================================================
+## Preprocessor: Recipe
+## Model: logistic_reg()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 3 Recipe Steps
+## 
+## * step_dummy()
+## * step_zv()
+## * step_normalize()
+## 
+## -- Model -----------------------------------------------------------------------
+## Logistic Regression Model Specification (classification)
+## 
+## Computational engine: glm
+```
+---
+## Step 3 訓練模型
+
+使用剛剛串起來的工作流程，加上`fit()`函數，完成建模，並用`pull_workflow_fit()`與`tidy()`呈現建模結果，注意這裡也是只能用**訓練組資料**`DM_train`
+
+
+```r
+lr_fit &lt;- 
+  lr_wflow %&gt;% 
+  fit(data=DM_train)
+
+lr_fit %&gt;% 
+  pull_workflow_fit() %&gt;% 
+  tidy()
+```
+
+```
+## # A tibble: 9 x 5
+##   term     estimate std.error statistic    p.value
+##   &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 (Interc~  -0.940      0.158   -5.97      2.44e-9
+## 2 pregnant   0.223      0.197    1.13      2.57e-1
+## 3 glucose    1.07       0.195    5.49      4.05e-8
+## 4 pressure  -0.116      0.162   -0.715     4.74e-1
+## 5 triceps   -0.0127     0.202   -0.0629    9.50e-1
+## 6 insulin   -0.0926     0.175   -0.530     5.96e-1
+## 7 mass       0.500      0.211    2.37      1.79e-2
+## 8 pedigree   0.309      0.166    1.86      6.31e-2
+## 9 age        0.392      0.208    1.88      6.01e-2
+```
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+
+使用`predict()`函數，用剛剛訓練出來的模型`lr_fit`以及一開始分出的測試組`DM_test`產生預測結果，注意這邊要用測試組資料
+
+
+```r
+lr_pred &lt;- lr_fit %&gt;% 
+  predict(DM_test)
+lr_pred
+```
+
+```
+## # A tibble: 97 x 1
+##    .pred_class
+##    &lt;fct&gt;      
+##  1 pos        
+##  2 neg        
+##  3 neg        
+##  4 pos        
+##  5 pos        
+##  6 pos        
+##  7 neg        
+##  8 neg        
+##  9 neg        
+## 10 neg        
+## # ... with 87 more rows
+```
+
+將預測結果與答案結合
+
+
+```r
+lr_pred &lt;- lr_fit %&gt;%
+  predict(DM_test) %&gt;% 
+  bind_cols(DM_test %&gt;% select(diabetes)) 
+lr_pred
+```
+
+```
+## # A tibble: 97 x 2
+##    .pred_class diabetes
+##    &lt;fct&gt;       &lt;fct&gt;   
+##  1 pos         pos     
+##  2 neg         pos     
+##  3 neg         neg     
+##  4 pos         pos     
+##  5 pos         pos     
+##  6 pos         pos     
+##  7 neg         neg     
+##  8 neg         neg     
+##  9 neg         neg     
+## 10 neg         neg     
+## # ... with 87 more rows
+```
+
+使用`accuracy()`函數，輸入預測結果與真實答案計算正確率
+
+
+```r
+lr_pred %&gt;% 
+  accuracy(truth = diabetes, 
+          .pred_class)
+```
+
+```
+## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.814
+```
+
+但很多時候我們需要Area under the ROC curve，此時我們需要的不是直接pos或neg的結果，我們需要的是連續性的預測數值，這邊可將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
+
+
+```r
+lr_pred &lt;- lr_fit %&gt;%
+  predict(DM_test,
+          type = "prob")%&gt;% 
+  bind_cols(DM_test %&gt;% select(diabetes)) 
+lr_pred
+```
+
+```
+## # A tibble: 97 x 3
+##    .pred_neg .pred_pos diabetes
+##        &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   
+##  1    0.180     0.820  pos     
+##  2    0.648     0.352  pos     
+##  3    0.850     0.150  neg     
+##  4    0.0683    0.932  pos     
+##  5    0.125     0.875  pos     
+##  6    0.126     0.874  pos     
+##  7    0.854     0.146  neg     
+##  8    0.963     0.0366 neg     
+##  9    0.824     0.176  neg     
+## 10    0.733     0.267  neg     
+## # ... with 87 more rows
+```
+
+
+得到各組預測值後，可用`roc_curve()`畫ROC curve
+
+```r
+lr_pred %&gt;% 
+  roc_curve(truth = diabetes, 
+            .pred_pos) %&gt;% 
+  autoplot()
+```
+
+![](DataMining_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+當然也能用`roc_auc()`算Area under the ROC curve
+
+
+```r
+lr_pred %&gt;% 
+  roc_auc(truth = diabetes, 
+          .pred_pos)
+```
+
+```
+## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 roc_auc binary         0.921
+```
+
+
+以上就是使用邏輯迴歸建立模型與效能測試流程，可以發現完全沒有調整任何參數，因基本邏輯迴歸不用調參數。
+
+---
+class: inverse, center, middle
+
+# 隨機森林Random Forest模型建立、參數調整與效能評估範例
+---
+## Step 1 設定平行處理
+
+因為模型參數調整需要一直不斷建立模型與測試，所以設定平行處理會快一些，`tidymodels`套組支援平行處理，細節可參考[官方文件](https://tune.tidymodels.org/articles/extras/optimizations.html)
+
+
+```r
+all_cores &lt;- parallel::detectCores(logical = FALSE)
+library(doParallel)
+```
+
+```
+## Loading required package: foreach
+```
+
+```
+## 
+## Attaching package: 'foreach'
+```
+
+```
+## The following objects are masked from 'package:purrr':
+## 
+##     accumulate, when
+```
+
+```
+## Loading required package: iterators
+```
+
+```
+## Loading required package: parallel
+```
+
+```r
+cl &lt;- makePSOCKcluster(all_cores)
+registerDoParallel(cl)
+```
+
+---
+## Step 2 設定用隨機森林建立模型以及要調整的參數
+
+這邊以隨機森林為例，用`rand_forest()`函數與`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法。
+
+在隨機森林`rand_forest()`函數中，可設定幾個參數，說明如下:
+
+- mtry: 在切割節點時，隨機抽取n個特徵，並從中選最適合的特徵當作節點
+- min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
+- trees: 建模要用幾棵樹
+
+在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用交叉驗證法(Cross Validation)來調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
+
+
+```r
+rf_mod &lt;- 
+  rand_forest(mtry = tune(), min_n = tune(), 
+              trees = 1000) %&gt;% 
+  set_engine("ranger") %&gt;% 
+  set_mode("classification")
+
+rf_mod
+```
+
+```
+## Random Forest Model Specification (classification)
+## 
+## Main Arguments:
+##   mtry = tune()
+##   trees = 1000
+##   min_n = tune()
+## 
+## Computational engine: ranger
+```
+
+---
+## Step 3 設定建模流程workflow
+
+建模流程同邏輯迴歸，將模型與資料前處理方法串接成一個工作流程
+
+
+```r
+rf_wflow &lt;- workflow() %&gt;%
+  add_model(rf_mod) %&gt;%
+  add_recipe(gen_recipe)
+```
+
+---
+## Step 4 參數調整組資料分割
+
+剛剛有提到我想要調整的參數為mtry以及min_n，調整的方法為交叉驗證法(Cross Validation)，這邊用`tidymodels`官網的圖來說明架構
+
+![](https://www.tidymodels.org/start/resampling/img/resampling.svg)&lt;!-- --&gt;
+[圖片來源](https://www.tidymodels.org/start/resampling/)
+
+在圖中，首先將所有資料分成測試組訓練組，也就是本篇文章一開始做的切割，為了調整參數，我們會再切訓練組的資料，做為測試各參數效能的**調整訓練**以及**調整測試**。
+
+切割**參數調整組**有很多種方法，可以用**bootstrap**法隨機抽，也可使用這邊的**交叉驗證**範例，交叉驗證的概念如下圖的下半部
+
+![](https://www.frontiersin.org/files/Articles/411217/fmicb-09-02393-HTML/image_m/fmicb-09-02393-g002.jpg)&lt;!-- --&gt;
+[圖片來源](https://doi.org/10.3389/fmicb.2018.02393)
+
+圖片下半部為5-fold Cross Validation的示意圖，可以看到每份資料都會被拿來當作**調整訓練**以及**調整測試**組，經過幾次測試後，用**調整測試**組的效能來決定一組最佳參數。
+
+這邊我們使用10-fold Cross Validation為例，先用`vfold_cv()`函數，設定分割基準為**訓練組**，要分10份`v=10`，分割時一樣要注意糖尿病的比例不能差太多
+
+
+```r
+set.seed(345)
+folds &lt;- vfold_cv(DM_train, v = 10,
+                  strata = diabetes)
+folds
+```
+
+```
+## #  10-fold cross-validation using stratification 
+## # A tibble: 10 x 2
+##    splits           id    
+##    &lt;named list&gt;     &lt;chr&gt; 
+##  1 &lt;split [265/30]&gt; Fold01
+##  2 &lt;split [265/30]&gt; Fold02
+##  3 &lt;split [265/30]&gt; Fold03
+##  4 &lt;split [265/30]&gt; Fold04
+##  5 &lt;split [265/30]&gt; Fold05
+##  6 &lt;split [265/30]&gt; Fold06
+##  7 &lt;split [265/30]&gt; Fold07
+##  8 &lt;split [266/29]&gt; Fold08
+##  9 &lt;split [267/28]&gt; Fold09
+## 10 &lt;split [267/28]&gt; Fold10
+```
+---
+## Step 5 調整參數
+
+完成分割後，可將之前的建模流程串接至`tune_grid()`函數，這個函數可以設定參數調整的方法，首先是調整要用的**參數調整組資料**`resamples = folds`，要測試幾組參數` grid = 50`，測試時要用什麼效能評估方式，這邊設定為Area under the ROC curve `metrics = metric_set(roc_auc)`。因為要重複訓練測試多次，因此這程式碼執行會需要一些時間。
+
+
+```r
+rf_res &lt;- 
+  rf_wflow %&gt;% 
+  tune_grid(
+    resamples = folds,
+    grid = 50,
+    metrics = metric_set(roc_auc),
+    control=control_resamples(save_pred = TRUE)
+    )
+```
+
+```
+## i Creating pre-processing data to finalize unknown parameter: mtry
+```
+
+
+執行完後，可用`collect_metrics()`查看各參數效能
+
+
+```r
+rf_res %&gt;%
+  collect_metrics()
+```
+
+```
+## # A tibble: 49 x 7
+##     mtry min_n .metric .estimator  mean     n
+##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;
+##  1     1     5 roc_auc binary     0.798    10
+##  2     1    15 roc_auc binary     0.809    10
+##  3     1    27 roc_auc binary     0.808    10
+##  4     2    11 roc_auc binary     0.809    10
+##  5     2    21 roc_auc binary     0.809    10
+##  6     2    23 roc_auc binary     0.809    10
+##  7     2    29 roc_auc binary     0.810    10
+##  8     2    32 roc_auc binary     0.811    10
+##  9     2    35 roc_auc binary     0.810    10
+## 10     2    36 roc_auc binary     0.808    10
+## # ... with 39 more rows, and 1 more variable:
+## #   std_err &lt;dbl&gt;
+```
+
+也可畫個圖呈現參數調整對效能的影響，由圖可知在這個範例中min_n越大效能越好
+
+
+```r
+rf_res %&gt;%
+  collect_metrics() %&gt;%
+  mutate(mtry = factor(mtry)) %&gt;%
+  ggplot(aes(min_n, mean, color = mtry)) + 
+  geom_line(size=1) +
+  scale_x_log10(labels = scales::label_number()) 
+```
+
+![](DataMining_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
+
+搭配`show_best()`函數可呈現Area under the ROC curve最優的幾組參數
+
+
+```r
+rf_res %&gt;%
+  show_best("roc_auc")
+```
+
+```
+## # A tibble: 5 x 7
+##    mtry min_n .metric .estimator  mean     n
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;
+## 1     3    31 roc_auc binary     0.814    10
+## 2     3    28 roc_auc binary     0.813    10
+## 3     3    30 roc_auc binary     0.813    10
+## 4     4    38 roc_auc binary     0.812    10
+## 5     4    33 roc_auc binary     0.811    10
+## # ... with 1 more variable: std_err &lt;dbl&gt;
+```
+
+
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+
+在完成參數調整後，我們會使用最佳參數(意即Area under the ROC curve最高的一組參數)來建立最終模型，用`select_best()`函數可選出最好的一組參數`best_rf`
+
+
+```r
+best_rf &lt;- rf_res %&gt;%
+  select_best("roc_auc")
+best_rf
+```
+
+```
+## # A tibble: 1 x 2
+##    mtry min_n
+##   &lt;int&gt; &lt;int&gt;
+## 1     3    31
+```
+
+為了將參數節合至原有的建模流程，可用`finalize_workflow()`函數輸入剛剛選出的最佳參數`best_rf`，建立一個**最終建模流程**
+
+
+```r
+final_wflow &lt;- 
+  rf_wflow %&gt;% 
+  finalize_workflow(best_rf)
+
+final_wflow
+```
+
+```
+## == Workflow ====================================================================
+## Preprocessor: Recipe
+## Model: rand_forest()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 3 Recipe Steps
+## 
+## * step_dummy()
+## * step_zv()
+## * step_normalize()
+## 
+## -- Model -----------------------------------------------------------------------
+## Random Forest Model Specification (classification)
+## 
+## Main Arguments:
+##   mtry = 3
+##   trees = 1000
+##   min_n = 31
+## 
+## Computational engine: ranger
+```
+
+**最終建模流程**建立後，即可用`fit()`建模，注意這邊用的是完整的訓練資料`DM_train`
+
+
+```r
+final_rf_model &lt;- 
+  final_wflow %&gt;%
+  fit(data = DM_train) 
+
+final_rf_model
+```
+
+```
+## == Workflow [trained] ==========================================================
+## Preprocessor: Recipe
+## Model: rand_forest()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 3 Recipe Steps
+## 
+## * step_dummy()
+## * step_zv()
+## * step_normalize()
+## 
+## -- Model -----------------------------------------------------------------------
+## Ranger result
+## 
+## Call:
+##  ranger::ranger(formula = formula, data = data, mtry = ~3L, num.trees = ~1000,      min.node.size = ~31L, num.threads = 1, verbose = FALSE, seed = sample.int(10^5,          1), probability = TRUE) 
+## 
+## Type:                             Probability estimation 
+## Number of trees:                  1000 
+## Sample size:                      295 
+## Number of independent variables:  8 
+## Mtry:                             3 
+## Target node size:                 31 
+## Variable importance mode:         none 
+## Splitrule:                        gini 
+## OOB prediction error (Brier s.):  0.1562294
+```
+
+---
+## Step 7 用測試組資料驗證最終模型效能
+
+使用`predict()`函數，用剛剛訓練出來的模型`final_rf_model`以及一開始分出的測試組`DM_test`產生預測結果，注意這邊要用測試組資料
+
+
+```r
+rf_pred &lt;- final_rf_model %&gt;% 
+  predict(DM_test)
+rf_pred
+```
+
+```
+## # A tibble: 97 x 1
+##    .pred_class
+##    &lt;fct&gt;      
+##  1 pos        
+##  2 neg        
+##  3 neg        
+##  4 pos        
+##  5 pos        
+##  6 pos        
+##  7 neg        
+##  8 neg        
+##  9 neg        
+## 10 neg        
+## # ... with 87 more rows
+```
+
+將預測結果與答案結合
+
+```r
+rf_pred &lt;- final_rf_model %&gt;%
+  predict(DM_test) %&gt;% 
+  bind_cols(DM_test %&gt;% select(diabetes)) 
+rf_pred
+```
+
+```
+## # A tibble: 97 x 2
+##    .pred_class diabetes
+##    &lt;fct&gt;       &lt;fct&gt;   
+##  1 pos         pos     
+##  2 neg         pos     
+##  3 neg         neg     
+##  4 pos         pos     
+##  5 pos         pos     
+##  6 pos         pos     
+##  7 neg         neg     
+##  8 neg         neg     
+##  9 neg         neg     
+## 10 neg         neg     
+## # ... with 87 more rows
+```
+
+使用預測結果與真實答案計算正確率
+
+```r
+rf_pred %&gt;% 
+  accuracy(truth = diabetes, 
+          .pred_class)
+```
+
+```
+## # A tibble: 1 x 3
+##   .metric  .estimator .estimate
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+## 1 accuracy binary         0.804
+```
+
+但很多時候我們需要Area under the ROC curve，此時我們需要的不是直接pos或neg的結果，我們需要的是連續性的預測數值，這邊可將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
+
+
+```r
+rf_pred &lt;- final_rf_model %&gt;%
+  predict(DM_test,
+          type = "prob")%&gt;% 
+  bind_cols(DM_test %&gt;% select(diabetes)) 
+rf_pred
+```
+
+```
+## # A tibble: 97 x 3
+##    .pred_neg .pred_pos diabetes
+##        &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   
+##  1     0.367    0.633  pos     
+##  2     0.518    0.482  pos     
+##  3     0.658    0.342  neg     
+##  4     0.156    0.844  pos     
+##  5     0.105    0.895  pos     
+##  6     0.181    0.819  pos     
+##  7     0.862    0.138  neg     
+##  8     0.955    0.0453 neg     
+##  9     0.801    0.199  neg     
+## 10     0.629    0.371  neg     
+## # ... with 87 more rows
+```
+
+
+得到各組預測值後，可用`roc_curve()`畫ROC curve
+
+```r
+rf_pred %&gt;% 
+  roc_curve(truth = diabetes, 
+            .pred_pos) %&gt;% 
+  autoplot()
+```
+
+![](DataMining_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
+
+當然也能用`roc_auc()`算Area under the ROC curve
+
+```r
+rf_pred %&gt;% 
+  roc_auc(truth = diabetes, 
+          .pred_pos)
+```
+
+```
+## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 roc_auc binary         0.912
+```
+
+
+以上就是使用隨機森林建立模型、調整參數以及與效能測試流程，多了使用交叉驗證法調整參數的步驟。
+
+
+---
+# Hello World
+
+Install the **xaringan** package from [Github](https://github.com/yihui/xaringan):
+
+
+```r
+devtools::install_github("yihui/xaringan")
+```
+
+--
+
+You are recommended to use the [RStudio IDE](https://www.rstudio.com/products/rstudio/), but you do not have to.
+
+- Create a new R Markdown document from the menu `File -&gt; New File -&gt; R Markdown -&gt; From Template -&gt; Ninja Presentation`;&lt;sup&gt;1&lt;/sup&gt;
+
+--
+
+- Click the `Knit` button to compile it;
+
+--
+
+- or use the [RStudio Addin](https://rstudio.github.io/rstudioaddins/)&lt;sup&gt;2&lt;/sup&gt; "Infinite Moon Reader" to live preview the slides (every time you update and save the Rmd document, the slides will be automatically reloaded in RStudio Viewer.
+
+.footnote[
+[1] 中文用户请看[这份教程](http://slides.yihui.org/xaringan/zh-CN.html)
+
+[2] See [#2](https://github.com/yihui/xaringan/issues/2) if you do not see the template or addin in RStudio.
+]
+
+---
+background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
+background-position: 50% 50%
+class: center, bottom, inverse
+
+# You only live once!
+
+---
+
+# Hello Ninja
+
+As a presentation ninja, you certainly should not be satisfied by the "Hello World" example. You need to understand more about two things:
+
+1. The [remark.js](https://remarkjs.com) library;
+
+1. The **xaringan** package;
+
+Basically **xaringan** injected the chakra of R Markdown (minus Pandoc) into **remark.js**. The slides are rendered by remark.js in the web browser, and the Markdown source needed by remark.js is generated from R Markdown (**knitr**).
+
+---
+
+# remark.js
+
+You can see an introduction of remark.js from [its homepage](https://remarkjs.com). You should read the [remark.js Wiki](https://github.com/gnab/remark/wiki) at least once to know how to
+
+- create a new slide (Markdown syntax&lt;sup&gt;*&lt;/sup&gt; and slide properties);
+
+- format a slide (e.g. text alignment);
+
+- configure the slideshow;
+
+- and use the presentation (keyboard shortcuts).
+
+It is important to be familiar with remark.js before you can understand the options in **xaringan**.
+
+.footnote[[*] It is different with Pandoc's Markdown! It is limited but should be enough for presentation purposes. Come on... You do not need a slide for the Table of Contents! Well, the Markdown support in remark.js [may be improved](https://github.com/gnab/remark/issues/142) in the future.]
+
+---
+background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
+background-size: cover
+class: center, bottom, inverse
+
+# I was so happy to have discovered remark.js!
+
+---
+class: inverse, middle, center
+
+# Using xaringan
+
+---
+
+# xaringan
+
+Provides an R Markdown output format `xaringan::moon_reader` as a wrapper for remark.js, and you can use it in the YAML metadata, e.g.
+
+```yaml
+---
+title: "A Cool Presentation"
+output:
+  xaringan::moon_reader:
+    yolo: true
+    nature:
+      autoplay: 30000
+---
+```
+
+See the help page `?xaringan::moon_reader` for all possible options that you can use.
+
+---
+
+# remark.js vs xaringan
+
+Some differences between using remark.js (left) and using **xaringan** (right):
+
+.pull-left[
+1. Start with a boilerplate HTML file;
+
+1. Plain Markdown;
+
+1. Write JavaScript to autoplay slides;
+
+1. Manually configure MathJax;
+
+1. Highlight code with `*`;
+
+1. Edit Markdown source and refresh browser to see updated slides;
+]
+
+.pull-right[
+1. Start with an R Markdown document;
+
+1. R Markdown (can embed R/other code chunks);
+
+1. Provide an option `autoplay`;
+
+1. MathJax just works;&lt;sup&gt;*&lt;/sup&gt;
+
+1. Highlight code with `{{}}`;
+
+1. The RStudio addin "Infinite Moon Reader" automatically refreshes slides on changes;
+]
+
+.footnote[[*] Not really. See next page.]
+
+---
+
+# Math Expressions
+
+You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
+
+```
+$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+```
+
+`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
+
+Limitations:
+
+1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
+
+1. There should not be spaces after the opening `$` or before the closing `$`.
+
+1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
+
+---
+
+# R Code
+
+
+```r
+# a boring regression
+fit = lm(dist ~ 1 + speed, data = cars)
+coef(summary(fit))
+```
+
+```
+#               Estimate Std. Error   t value
+# (Intercept) -17.579095  6.7584402 -2.601058
+# speed         3.932409  0.4155128  9.463990
+#                 Pr(&gt;|t|)
+# (Intercept) 1.231882e-02
+# speed       1.489836e-12
+```
+
+```r
+dojutsu = c('地爆天星', '天照', '加具土命', '神威', '須佐能乎', '無限月読')
+grep('天', dojutsu, value = TRUE)
+```
+
+```
+# [1] "地爆天星" "天照"
+```
+
+---
+
+# R Plots
+
+
+```r
+par(mar = c(4, 4, 1, .1))
+plot(cars, pch = 19, col = 'darkgray', las = 1)
+abline(fit, lwd = 2)
+```
+
+![](DataMining_files/figure-html/cars-1.svg)&lt;!-- --&gt;
+
+---
+
+# Tables
+
+If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+
+
+```r
+knitr::kable(head(iris), format = 'html')
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Sepal.Length &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Sepal.Width &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Petal.Length &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Petal.Width &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Species &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# HTML Widgets
+
+I have not thoroughly tested HTML widgets against **xaringan**. Some may work well, and some may not. It is a little tricky.
+
+Similarly, the Shiny mode (`runtime: shiny`) does not work. I might get these issues fixed in the future, but these are not of high priority to me. I never turn my presentation into a Shiny app. When I need to demonstrate more complicated examples, I just launch them separately. It is convenient to share slides with other people when they are plain HTML/JS applications.
+
+See the next page for two HTML widgets.
+
+---
+
+
+```r
+library(leaflet)
+leaflet() %&gt;% addTiles() %&gt;% setView(-93.65, 42.0285, zoom = 17)
+```
+
+<div id="htmlwidget-090368b2a932d7906c1d" style="width:100%;height:432px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-090368b2a932d7906c1d">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]}],"setView":[[42.0285,-93.65],17,[]]},"evals":[],"jsHooks":[]}</script>
+
+---
+
+
+```r
+DT::datatable(
+  head(iris, 10),
+  fillContainer = FALSE, options = list(pageLength = 8)
+)
+```
+
+<div id="htmlwidget-b74a424fa43b7922cbcc" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b74a424fa43b7922cbcc">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9],[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1],[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5],[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1],["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sepal.Length<\/th>\n      <th>Sepal.Width<\/th>\n      <th>Petal.Length<\/th>\n      <th>Petal.Width<\/th>\n      <th>Species<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Some Tips
+
+- When you use the "Infinite Moon Reader" addin in RStudio, your R session will be blocked by default. You can click the red button on the right of the console to stop serving the slides, or use the _daemonized_ mode so that it does not block your R session. To do the latter, you can set the option
+
+    ```r
+    options(servr.daemon = TRUE)
+    ```
+    
+    in your current R session, or in `~/.Rprofile` so that it is applied to all future R sessions. I do the latter by myself.
+    
+    To know more about the web server, see the [**servr**](https://github.com/yihui/servr) package.
+
+--
+
+- Do not forget to try the `yolo` option of `xaringan::moon_reader`.
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        yolo: true
+    ```
+
+---
+
+# Some Tips
+
+- Slides can be automatically played if you set the `autoplay` option under `nature`, e.g. go to the next slide every 30 seconds in a lightning talk:
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        nature:
+          autoplay: 30000
+    ```
+
+--
+
+- A countdown timer can be added to every page of the slides using the `countdown` option under `nature`, e.g. if you want to spend one minute on every page when you give the talk, you can set:
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        nature:
+          countdown: 60000
+    ```
+
+    Then you will see a timer counting down from `01:00`, to `00:59`, `00:58`, ... When the time is out, the timer will continue but the time turns red.
+    
+---
+
+# Some Tips
+
+- The title slide is created automatically by **xaringan**, but it is just another remark.js slide added before your other slides.
+
+    The title slide is set to `class: center, middle, inverse, title-slide` by default. You can change the classes applied to the title slide with the `titleSlideClass` option of `nature` (`title-slide` is always applied).
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        nature:
+          titleSlideClass: [top, left, inverse]
+    ```
+    
+--
+
+- If you'd like to create your own title slide, disable **xaringan**'s title slide with the `seal = FALSE` option of `moon_reader`.
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        seal: false
+    ```
+
+---
+
+# Some Tips
+
+- There are several ways to build incremental slides. See [this presentation](https://slides.yihui.org/xaringan/incremental.html) for examples.
+
+- The option `highlightLines: true` of `nature` will highlight code lines that start with `*`, or are wrapped in `{{ }}`, or have trailing comments `#&lt;&lt;`;
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        nature:
+          highlightLines: true
+    ```
+
+    See examples on the next page.
+
+---
+
+# Some Tips
+
+
+.pull-left[
+An example using a leading `*`:
+
+    ```r
+    if (TRUE) {
+    ** message("Very important!")
+    }
+    ```
+Output:
+```r
+if (TRUE) {
+* message("Very important!")
+}
+```
+
+This is invalid R code, so it is a plain fenced code block that is not executed.
+]
+
+.pull-right[
+An example using `{{}}`:
+
+````
+```{r tidy=FALSE}
+if (TRUE) {
+*{{ message("Very important!") }}
+}
+```
+````
+Output:
+
+```r
+if (TRUE) {
+* message("Very important!") 
+}
+```
+
+```
+## Very important!
+```
+
+It is valid R code so you can run it. Note that `{{}}` can wrap an R expression of multiple lines.
+]
+
+---
+
+# Some Tips
+
+An example of using the trailing comment `#&lt;&lt;` to highlight lines:
+
+````markdown
+```{r tidy=FALSE}
+library(ggplot2)
+ggplot(mtcars) + 
+  aes(mpg, disp) + 
+  geom_point() +   #&lt;&lt;
+  geom_smooth()    #&lt;&lt;
+```
+````
+
+Output:
+
+
+```r
+library(ggplot2)
+ggplot(mtcars) + 
+  aes(mpg, disp) + 
+* geom_point() +
+* geom_smooth()
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
