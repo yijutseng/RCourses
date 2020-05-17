@@ -6,22 +6,6 @@
     <meta name="author" content="Yi-Ju Tseng" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-    <script src="libs/jquery-1.12.4/jquery.min.js"></script>
-    <link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
-    <script src="libs/leaflet-1.3.1/leaflet.js"></script>
-    <link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
-    <script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
-    <script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
-    <link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
-    <script src="libs/leaflet-binding-2.0.3/leaflet.js"></script>
-    <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-    <script src="libs/datatables-binding-0.9/datatables.js"></script>
-    <link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-    <link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
-    <script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
-    <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-    <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
   </head>
   <body>
     <textarea id="source">
@@ -30,7 +14,7 @@ class: center, middle, inverse, title-slide
 # Case Studies in Data Mining with R
 ### Yi-Ju Tseng
 ### Chung Gung University
-### 2020/05/15
+### 2020/05/18
 
 ---
 
@@ -116,7 +100,7 @@ install.packages("tidymodels")
 ```
 
 ```
-## ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.1.0 ──
+## ── Attaching packages ───────────────────────────────────── tidymodels 0.1.0 ──
 ```
 
 ```
@@ -162,7 +146,7 @@ install.packages("tidymodels")
 ```
 
 ```
-## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
+## ── Conflicts ──────────────────────────────────────── tidymodels_conflicts() ──
 ## x purrr::discard()  masks scales::discard()
 ## x dplyr::filter()   masks stats::filter()
 ## x dplyr::lag()      masks stats::lag()
@@ -183,22 +167,20 @@ class: inverse, center, middle
 
 ## 建模範例資料 - 載入
 
-- `mlbench`套件`PimaIndiansDiabetes2`資料集
-- Outcome為是否有糖尿病diabetes
-- 變數可輸入`?PimaIndiansDiabetes2`查看
+- `mlbench`套件內附的`PimaIndiansDiabetes2`資料集
+- Outcome為是否有糖尿病  **diabetes**欄位
+- 可輸入`?PimaIndiansDiabetes2`查看所有欄位變數
 
 
 ```r
 library(mlbench)
-data("PimaIndiansDiabetes2")
+data("PimaIndiansDiabetes2") # 載入資料
 ```
 ---
 
 ## 建模範例資料 - 初探
 
-- 看一下各資料的型態跟資料筆數
-- 發現有不少空值
-
+- 用`glimpse()`函數看一下各資料的**型態**跟資料**筆數**
 
 ```r
 glimpse(PimaIndiansDiabetes2)
@@ -217,11 +199,13 @@ glimpse(PimaIndiansDiabetes2)
 ## $ age      &lt;dbl&gt; 50, 31, 32, 21, 33, 30, 26, 29, 53, 54, 30, 34, 57, 59, 51, …
 ## $ diabetes &lt;fct&gt; pos, neg, pos, neg, pos, neg, pos, neg, pos, pos, neg, pos, …
 ```
+- 發現有不少空值，要決定如何處理
+
 ---
 
 ## 建模範例資料 - Outcome比例
 
-- 在刪除不全的資料前，先看有糖尿病diabetes跟沒有糖尿病的人數與比例
+- 在處理空值前，先看**diabetes**欄位中有病跟沒病的人數與比例
 
 
 ```r
@@ -238,12 +222,12 @@ PimaIndiansDiabetes2 %&gt;%
 ## 2 pos        268 0.349
 ```
 
-- 大概是65:35，有些不平均但還行
+- 大概是65:35，有些不平均，但還行
 
 ---
-## 刪除遺漏值
+## 刪除空（遺漏）值
 
-- 臨床研究通常會刪除有缺值的資料
+- 臨床研究通常會刪除有**缺值**的資料
 - 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
 - 某些演算法不能用有空值的資料建模
 
@@ -251,7 +235,7 @@ PimaIndiansDiabetes2 %&gt;%
 
 ```r
 PimaIndiansDiabetes2&lt;-
-  PimaIndiansDiabetes2 %&gt;% 
+* PimaIndiansDiabetes2 %&gt;%
   filter(complete.cases(PimaIndiansDiabetes2)) 
 ```
 
@@ -259,7 +243,7 @@ PimaIndiansDiabetes2&lt;-
 ---
 ## 刪除遺漏值
 
-- 臨床研究通常會刪除有缺值的資料
+- 臨床研究通常會刪除有**缺值**的資料
 - 為了後續敘述性統計方便，若狀況許可，會在第一步刪除資料
 - 某些演算法不能用有空值的資料建模
 
@@ -308,7 +292,7 @@ PimaIndiansDiabetes2&lt;-
 ```
 
 - `filter()`為`dplyr`套件的功能，可針對資料列(row)做子集
-- `complete.cases()`用來辨識是否為完整資料，若沒有空值，回傳TRUE
+- 用`complete.cases()`辨識是否為完整資料，若沒有空值，回傳TRUE
 
 ---
 ## 刪除遺漏值後 - Outcome比例
@@ -336,16 +320,21 @@ class: inverse, center, middle
 # 敘述性統計
 
 ---
+## 醫學資料分析中的敘述性統計
+- 通常是論文中的必要表格
+- 描述有病沒病的兩群人的基本資料，並做**統計檢定**
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneExample.png" height="400px" style="display: block; margin: auto;" /&gt;
+[Source](https://www.sciencedirect.com/science/article/abs/pii/S1386505618311213)
 
 ---
 ## 單變量分析
-
-
+- 使用`tableone`套件完成表格，第一次使用前要先安裝
+- 將去除空值的資料`PimaIndiansDiabetes2`放入`CreateTableOne()`函數
 
 ```r
 library(tableone)
 tableone&lt;-
-  CreateTableOne(data=PimaIndiansDiabetes2)
+* CreateTableOne(data=PimaIndiansDiabetes2)
 print(tableone)
 ```
 
@@ -363,7 +352,7 @@ print(tableone)
 ##   age (mean (SD))       30.86 (10.20) 
 ##   diabetes = pos (%)      130 (33.2)
 ```
-
+- [tableone使用說明](https://cran.r-project.org/web/packages/tableone/vignettes/introduction.html)
 ---
 ## 單變量分析 - 依outcome分組
 
@@ -419,37 +408,105 @@ tableone&lt;-
 ```
 
 ---
-## 單變量分析 - Excel處理步驟
+## 單變量分析 - Excel處理步驟 (1/7)
 
+調整Console視窗大小，讓結果不被強迫換行
+
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneR.png" height="400px" style="display: block; margin: auto;" /&gt;
+
+---
+## 單變量分析 - Excel處理步驟 (2/7)
+
+全選表格
+
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRSelect.png" height="400px" style="display: block; margin: auto;" /&gt;
+
+---
+## 單變量分析 - Excel處理步驟 (3/7)
+
+打開Excel貼上
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcel.png" height="400px" style="display: block; margin: auto;" /&gt;
+---
+## 單變量分析 - Excel處理步驟 (4/7)
+打開Excel-&gt;資料-&gt;資料剖析功能
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelFormat.png" height="400px" style="display: block; margin: auto;" /&gt;
+---
+## 單變量分析 - Excel處理步驟 (5/7)
+設定使用分隔符號切割資料
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelDel.png" height="400px" style="display: block; margin: auto;" /&gt;
+---
+## 單變量分析 - Excel處理步驟 (6/7)
+用空格當作分隔符號，並將文字辨識符號設為雙引號
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelDelSetting.png" height="400px" style="display: block; margin: auto;" /&gt;
+
+
+---
+## 單變量分析 - Excel處理步驟 (7/7)
+完成！！
+&lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneFinal.png" height="400px" style="display: block; margin: auto;" /&gt;
 ---
 class: inverse, center, middle
 
-# 開始建模
+# 開始建模 - 策略說明與資料分割
 
 ---
 
 ## 訓練/調整與驗證模型效能策略
+How to Read Articles That Use Machine Learning - Users’ Guides to the Medical Literature [JAMA](https://jamanetwork.com/journals/jama/fullarticle/2754798)，說明在機器學習時代如何建立預測模型，跟傳統的不同
+&lt;img src="https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" height="400px" style="display: block; margin: auto;" /&gt;
+---
 
-JAMA在2019年刊登一篇有趣的文章，名稱為How to Read Articles That Use Machine Learning - Users’ Guides to the Medical Literature [下載](https://jamanetwork.com/journals/jama/fullarticle/2754798)，內文中有提到在機器學習時代，如何建立與預測模型，跟之前又有什麼不同，並用下圖來解釋差異
+## 調整參數的必要性
 
-![](https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)&lt;!-- --&gt;
-[圖片來源](https://jamanetwork.com/journals/jama/fullarticle/2754798)
-
-
-在所謂的"非"機器學習模型(圖上半部)，通常可分訓練組與測試組，在作者定義為Development set和Validation set，重要的概念是訓練模型時，一定要記得先把測試組資料分出來，不可以用到這部分資料來訓練模型，最後才能得到真實的預測結果 (完全沒偷看答案的意思)。
-
-在圖下半部，作者將此法命名為**3-step process**，主要差異是在訓練模型時多了一組**參數調整資料集**，原因是因為在多種機器學習模型中，有可調整的參數，在圖中稱為Hyperparameters，為了讓調整效果更好，會將訓練組再切分成小組，用來決定**最佳參數**，決定好以後，才用所有訓練組資料搭配最佳參數訓練模型，最後再用測試組做測試。
-
-以下用邏輯迴歸歸Logistic Regression示範此圖上半部**不調參數**的作法，以及用隨機森林Random Forest示範此圖下半部**需要調整參數**的作法。
+- 在傳統"非"機器學習模型(圖上半部)，分訓練組與測試組
+- 訓練模型時，記得不可以用**測試組**資料來訓練模型，才能得到真實的預測結果 (完全沒偷看答案的意思)
+&lt;img src="https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
-# 訓練組、測試組資料分割
 
-不管要不要調參數，都需要分割訓練組與測試組，因此在進入兩個範例前，先將訓練組與測試組切好。
+## 調整參數的必要性
+- 在圖下半，主要差異是在訓練模型時多了一組**參數調整資料集**
+- 因為在多種機器學習模型中，有可調整的參數
+- 為了讓參數調整效果更好，會將訓練組再切分成小組，用來決定**最佳參數**
+- 決定**最佳參數**以後，用**訓練組**搭配最佳參數訓練模型，最後用**測試組**測試
+&lt;img src="https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" height="400px" style="display: block; margin: auto;" /&gt;
+---
 
-用`initial_split()`函數將資料分成訓練組與測試組，第一個參數放資料，第二個參數`prop`放訓練組測試組比例，第三個參數`strata`放分組抽樣依據。需要設定分組抽樣依據是因為若是整批資料隨機抽樣，很有可能在測試組或是訓練組會少一整個組別的資料(剛好都沒抽到的意思)，所以就分組，個別抽某個比例的人當訓練組，剩下的就當測試組。切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
+## 調整參數的必要性
 
-這邊要特別注意的是，因為`initial_split()`函數有隨機的概念，為了讓每次的實驗結果相同，我們會在有隨機事件前設定seed，作為隨機的依據，讓隨機每次都一樣，才不會每次跑都是不一樣的結果，這樣就無法產生可重複的實驗結果。
+本課程範例 :
+
+- **邏輯迴歸Logistic Regression**示範此圖上半部**不調參數**的作法
+- **隨機森林Random Forest**示範此圖下半部**需要調整參數**的作法
+&lt;img src="https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" height="400px" style="display: block; margin: auto;" /&gt;
+---
+## 訓練組、測試組資料分割
+
+- 不管要不要調參數，都需要分割**訓練組**與**測試組**
+- 用`initial_split()`函數將資料分成訓練組與測試組
+  - 第一個參數放資料`PimaIndiansDiabetes2`
+  - 第二個參數`prop`放訓練組測試組比例`(3/4)`
+  - 第三個參數`strata`放分組抽樣依據`diabetes`，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
+
+
+```r
+set.seed(123)
+*splits&lt;- initial_split(PimaIndiansDiabetes2,
+*                      prop=(3/4),
+*                      strata = diabetes)
+DM_train&lt;- training(splits)
+DM_test&lt;- testing(splits)
+```
+
+---
+## 訓練組、測試組資料分割
+
+- 不管要不要調參數，都需要分割訓練組與測試組
+- 用`initial_split()`函數將資料分成訓練組與測試組
+  - 第一個參數放資料
+  - 第二個參數`prop`放訓練組測試組比例
+  - 第三個參數`strata`放分組抽樣依據，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
+- 切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
 
 
 ```r
@@ -457,10 +514,29 @@ set.seed(123)
 splits&lt;- initial_split(PimaIndiansDiabetes2, 
                        prop=(3/4),
                        strata = diabetes)
+*DM_train&lt;- training(splits)
+*DM_test&lt;- testing(splits)
+```
+---
+## 訓練組、測試組資料分割
+
+- `initial_split()`函數有隨機的概念
+- 為了讓每次的實驗結果相同，要**在有隨機事件前設定seed** `set.seed()`
+- seed為隨機的依據，讓隨機每次都一樣，確保實驗結果可重複
+
+
+```r
+*set.seed(123)
+splits&lt;- initial_split(PimaIndiansDiabetes2, 
+                       prop=(3/4),
+                       strata = diabetes)
 DM_train&lt;- training(splits)
 DM_test&lt;- testing(splits)
 ```
+---
+## 查看分組結果
 
+.pull-left[
 分組完後，查看訓練組的生病比例
 
 ```r
@@ -476,7 +552,10 @@ DM_train %&gt;%
 ## 1 neg        197 0.668
 ## 2 pos         98 0.332
 ```
+]
 
+--
+.pull-right[
 查看測試組的生病比例
 
 ```r
@@ -492,28 +571,30 @@ DM_test %&gt;%
 ## 1 neg         65 0.670
 ## 2 pos         32 0.330
 ```
+]
 
 ---
-# 建立資料前處理“食譜”
+class: inverse, center, middle
 
-資料前處理也是建立兩種模型都必須經歷的方法，因此提到最前方說明，前處理有很多方法，包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等。
+# 開始建模 - 資料前處理
 
-首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`，要注意這邊只能用**訓練組資料**，不能用全部的資料。公式的意思是用`~`前方的`diabetes`當成outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features，為預測基礎)。
+---
+## 建立資料前處理“食譜”
 
-完成模型公式與資料設定後，就開始逐一加上想要做的資料前處理方法，在這邊列舉幾項我認為以此案例可能需要做的前處理
+- 資料前處理也是建立兩種模型都必須經歷的方法
+- 前處理包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等
 
-- `step_naomit(everything(), skip = TRUE)` 如果沒有在一開始將NA資料刪掉，通常要去除NA值
-- `step_rose(diabetes)` 其實這個資料有病沒病的人沒差太多，只是呈現一下可以在此步驟設定oversampleing或是undersampling，這邊是指使用ROSE作為oversampling的演算法
-- `step_dummy(all_nominal(), -all_outcomes())` 將所有的類別變項轉成虛擬變項，除了Outcome以外
-- `step_zv(all_predictors())` 若有變項都是一樣的值，刪掉。舉例來說，若是整個資料都是女性，那性別欄位就不用拿來當作features了
-- `step_normalize(all_predictors())` 將所有數值變項正規化
+--
 
-還有很多其他的前處理方法，可以參考`recipe()`函數的[說明文件](https://recipes.tidymodels.org/reference/recipe.html)
+- 首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`
+  - 注意這邊只能用**訓練組資料**，不能用全部的資料
+  - 公式：用`~`前方的`diabetes`當outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features)
+
 
 
 ```r
 gen_recipe &lt;- 
-  recipe(diabetes ~ ., data = DM_train) %&gt;% 
+* recipe(diabetes ~ ., data = DM_train) %&gt;%
   step_dummy(all_nominal(), -all_outcomes()) %&gt;% 
   step_zv(all_predictors()) %&gt;% 
   step_normalize(all_predictors())
@@ -536,6 +617,72 @@ summary(gen_recipe)
 ```
 
 ---
+## 建立資料前處理“食譜”
+
+完成模型公式與資料設定後，就開始逐一加上想要做的資料前處理方法
+
+
+- `step_dummy(all_nominal(), -all_outcomes())` 將所有的類別變項轉成虛擬變項，除了Outcome以外
+- `step_zv(all_predictors())` 若有變項都是一樣的值，刪掉。舉例來說，若是整個資料都是女性，那性別欄位就不用拿來當作features了
+- `step_normalize(all_predictors())` 將所有數值變項正規化
+
+
+```r
+gen_recipe &lt;- 
+  recipe(diabetes ~ ., data = DM_train) %&gt;% 
+* step_dummy(all_nominal(), -all_outcomes()) %&gt;%
+* step_zv(all_predictors()) %&gt;%
+* step_normalize(all_predictors())
+summary(gen_recipe)
+```
+
+```
+## # A tibble: 9 x 4
+##   variable type    role      source  
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+## 1 pregnant numeric predictor original
+## 2 glucose  numeric predictor original
+## 3 pressure numeric predictor original
+## 4 triceps  numeric predictor original
+## 5 insulin  numeric predictor original
+## 6 mass     numeric predictor original
+## 7 pedigree numeric predictor original
+## 8 age      numeric predictor original
+## 9 diabetes nominal outcome   original
+```
+
+---
+## 建立資料前處理“食譜”
+還有很多其他的前處理方法：
+- `step_naomit(everything(), skip = TRUE)` 如果沒有在一開始將NA資料刪掉，通常要去除NA值
+- `step_rose(diabetes)` 設定oversampleing或是undersampling，範例用ROSE作為oversampling的演算法
+- 參考`recipe()`函數的[說明文件](https://recipes.tidymodels.org/reference/recipe.html)
+
+
+```r
+gen_recipe &lt;- 
+  recipe(diabetes ~ ., data = DM_train) %&gt;% 
+  step_dummy(all_nominal(), -all_outcomes()) %&gt;%  
+  step_zv(all_predictors()) %&gt;% 
+  step_normalize(all_predictors())
+*summary(gen_recipe)
+```
+
+```
+## # A tibble: 9 x 4
+##   variable type    role      source  
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+## 1 pregnant numeric predictor original
+## 2 glucose  numeric predictor original
+## 3 pressure numeric predictor original
+## 4 triceps  numeric predictor original
+## 5 insulin  numeric predictor original
+## 6 mass     numeric predictor original
+## 7 pedigree numeric predictor original
+## 8 age      numeric predictor original
+## 9 diabetes nominal outcome   original
+```
+---
 class: inverse, center, middle
 
 # 邏輯迴歸Logistic Regression模型建立與效能評估範例
@@ -543,138 +690,236 @@ class: inverse, center, middle
 ---
 ## Step 1 設定用邏輯迴建立模型
 
-這邊以邏輯迴歸為例，用`logistic_reg()`函數與`set_engine("glm")`設定模型建立演算法為邏輯迴歸
+- 以邏輯迴歸為例
+- 用`logistic_reg()`函數指定使用邏輯迴歸
+- 用`set_engine("glm")`設定模型建立演算法
 
 
 ```r
 lr_mod &lt;- 
-  logistic_reg() %&gt;% 
-  set_engine("glm")
+* logistic_reg() %&gt;%
+* set_engine("glm")
 ```
 ---
 ## Step 2 設定建模流程workflow
 
-workflow將建模 (model)與資料前處理方法 (recipe)串成單一工作流程workflow
+將建模 (model，從step 1來的)與資料前處理方法 (recipe，從前處理來的)串成單一工作流程workflow
 
 
 ```r
 lr_wflow &lt;- 
-  workflow() %&gt;% 
-  add_model(lr_mod) %&gt;% 
-  add_recipe(gen_recipe)
+* workflow() %&gt;%
+* add_model(lr_mod) %&gt;%
+* add_recipe(gen_recipe)
 lr_wflow
 ```
 
 ```
-## ══ Workflow ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+## ══ Workflow ═══════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: logistic_reg()
 ## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ───────────────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## ● step_dummy()
 ## ● step_zv()
 ## ● step_normalize()
 ## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ──────────────────────────────────────────────────────────────────────
 ## Logistic Regression Model Specification (classification)
 ## 
 ## Computational engine: glm
 ```
+
 ---
 ## Step 3 訓練模型
 
-使用剛剛串起來的工作流程，加上`fit()`函數，完成建模，並用`pull_workflow_fit()`與`tidy()`呈現建模結果，注意這裡也是只能用**訓練組資料**`DM_train`
+- 使用剛剛串起來的工作流程，加上`fit()`函數，完成建模
 
 
 ```r
 lr_fit &lt;- 
   lr_wflow %&gt;% 
-  fit(data=DM_train)
+* fit(data=DM_train)
+```
 
+---
+## Step 3 訓練模型
+
+- 使用剛剛串起來的工作流程，加上`fit()`函數，完成建模
+
+```r
+lr_fit &lt;- 
+  lr_wflow %&gt;% 
+  fit(data=DM_train) 
+```
+
+- 用`pull_workflow_fit()`與`tidy()`呈現建模結果，注意這裡也是只能用**訓練組資料**`DM_train`
+
+
+```r
 lr_fit %&gt;% 
-  pull_workflow_fit() %&gt;% 
-  tidy()
+* pull_workflow_fit() %&gt;%
+* tidy()
 ```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9399004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1575646 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -5.9651752 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pregnant &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2232861 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1971191 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1327476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2573203 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; glucose &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0707970 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1950975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.4885222 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pressure &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.1158912 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1619846 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.7154459 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4743336 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; triceps &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0126884 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2015624 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0629500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9498063 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; insulin &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0925636 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1746867 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5298836 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5961927 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
-```
-## # A tibble: 9 x 5
-##   term        estimate std.error statistic       p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
-## 1 (Intercept)  -0.940      0.158   -5.97   0.00000000244
-## 2 pregnant      0.223      0.197    1.13   0.257        
-## 3 glucose       1.07       0.195    5.49   0.0000000405 
-## 4 pressure     -0.116      0.162   -0.715  0.474        
-## 5 triceps      -0.0127     0.202   -0.0629 0.950        
-## 6 insulin      -0.0926     0.175   -0.530  0.596        
-## 7 mass          0.500      0.211    2.37   0.0179       
-## 8 pedigree      0.309      0.166    1.86   0.0631       
-## 9 age           0.392      0.208    1.88   0.0601
-```
 ---
 ## Step 4 使用模型與測試組資料驗證模型效能
 
-使用`predict()`函數，用剛剛訓練出來的模型`lr_fit`以及一開始分出的測試組`DM_test`產生預測結果，注意這邊要用測試組資料
+- 剛剛訓練出來的模型`lr_fit`丟入`predict()`函數，指定以一開始分出的測試組`DM_test`產生預測結果
+- 注意這邊**只能用測試組資料**`DM_test`
 
 
 ```r
 lr_pred &lt;- lr_fit %&gt;% 
-  predict(DM_test)
+* predict(DM_test)
+```
+
+```r
 lr_pred
 ```
-
-```
-## # A tibble: 97 x 1
-##    .pred_class
-##    &lt;fct&gt;      
-##  1 pos        
-##  2 neg        
-##  3 neg        
-##  4 pos        
-##  5 pos        
-##  6 pos        
-##  7 neg        
-##  8 neg        
-##  9 neg        
-## 10 neg        
-## # … with 87 more rows
-```
-
-將預測結果與答案結合
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .pred_class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+- 通常會直接將`predict()`函數預測結果與真實答案結合
+- 答案為**測試組資料**`DM_test`中的diabetes欄位
+- 將預測結果丟入`bind_cols()`，並指定與答案直接結合
 
 
 ```r
 lr_pred &lt;- lr_fit %&gt;%
   predict(DM_test) %&gt;% 
-  bind_cols(DM_test %&gt;% select(diabetes)) 
+* bind_cols(DM_test %&gt;% select(diabetes))
+```
+
+```r
 lr_pred
 ```
-
-```
-## # A tibble: 97 x 2
-##    .pred_class diabetes
-##    &lt;fct&gt;       &lt;fct&gt;   
-##  1 pos         pos     
-##  2 neg         pos     
-##  3 neg         neg     
-##  4 pos         pos     
-##  5 pos         pos     
-##  6 pos         pos     
-##  7 neg         neg     
-##  8 neg         neg     
-##  9 neg         neg     
-## 10 neg         neg     
-## # … with 87 more rows
-```
-
-使用`accuracy()`函數，輸入預測結果與真實答案計算正確率
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .pred_class &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; diabetes &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+使用`accuracy()`函數，輸入剛剛整合的**預測結果**與**真實答案**計算正確率
 
 
 ```r
 lr_pred %&gt;% 
-  accuracy(truth = diabetes, 
-          .pred_class)
+* accuracy(truth = diabetes,
+*         .pred_class)
 ```
 
 ```
@@ -684,64 +929,196 @@ lr_pred %&gt;%
 ## 1 accuracy binary         0.814
 ```
 
-但很多時候我們需要Area under the ROC curve，此時我們需要的不是直接pos或neg的結果，我們需要的是連續性的預測數值，這邊可將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+
+- 很多時候我們需要回報**Area under the ROC curve**
+- 此時不能直接採用模型預測pos或neg的結果
+- 需要的連續性的預測數值來畫**ROC curve**
+- 將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
 
 
 ```r
 lr_pred &lt;- lr_fit %&gt;%
   predict(DM_test,
-          type = "prob")%&gt;% 
+*         type = "prob")%&gt;%
   bind_cols(DM_test %&gt;% select(diabetes)) 
+```
+
+```r
 lr_pred
 ```
-
-```
-## # A tibble: 97 x 3
-##    .pred_neg .pred_pos diabetes
-##        &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   
-##  1    0.180     0.820  pos     
-##  2    0.648     0.352  pos     
-##  3    0.850     0.150  neg     
-##  4    0.0683    0.932  pos     
-##  5    0.125     0.875  pos     
-##  6    0.126     0.874  pos     
-##  7    0.854     0.146  neg     
-##  8    0.963     0.0366 neg     
-##  9    0.824     0.176  neg     
-## 10    0.733     0.267  neg     
-## # … with 87 more rows
-```
-
-
-得到各組預測值後，可用`roc_curve()`畫ROC curve
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; .pred_neg &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .pred_pos &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; diabetes &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1802343 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8197657 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.6479680 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3520320 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.8500444 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1499556 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.0682963 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9317037 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1247665 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8752335 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1262743 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8737257 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 4 使用模型與測試組資料驗證效能
+將預測結果`lr_pred`丟入`roc_curve()`，加上`autoplot()`畫ROC curve
 
 ```r
 lr_pred %&gt;% 
-  roc_curve(truth = diabetes, 
-            .pred_pos) %&gt;% 
-  autoplot()
+* roc_curve(truth = diabetes,
+*           .pred_pos) %&gt;%
+* autoplot()
 ```
 
-![](DataMining_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+&lt;img src="DataMining_files/figure-html/unnamed-chunk-57-1.png" height="350px" style="display: block; margin: auto;" /&gt;
 
+---
+## Step 4 使用模型與測試組資料驗證效能
 當然也能用`roc_auc()`算Area under the ROC curve
 
 
 ```r
 lr_pred %&gt;% 
-  roc_auc(truth = diabetes, 
-          .pred_pos)
+* roc_auc(truth = diabetes,
+*         .pred_pos)
 ```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .estimate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9206731 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 5 解釋模型
+- 以迴歸為例，參數即可解釋各變數與模型的關係
+- 用`pull_workflow_fit()`與`tidy()`呈現建模結果
 
+
+```r
+lr_fit %&gt;% 
+* pull_workflow_fit() %&gt;%
+* tidy()
 ```
-## # A tibble: 1 x 3
-##   .metric .estimator .estimate
-##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 roc_auc binary         0.921
-```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9399004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1575646 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -5.9651752 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pregnant &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2232861 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1971191 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1327476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2573203 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; glucose &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0707970 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1950975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.4885222 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pressure &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.1158912 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1619846 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.7154459 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4743336 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; triceps &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0126884 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2015624 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0629500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9498063 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; insulin &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0925636 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1746867 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5298836 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5961927 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; mass &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4998571 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2111084 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.3677750 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0178954 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pedigree &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3092734 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1663840 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8587933 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0630564 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; age &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3915963 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2083075 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8798951 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0601224 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
-
-以上就是使用邏輯迴歸建立模型與效能測試流程，可以發現完全沒有調整任何參數，因基本邏輯迴歸不用調參數。
+---
+# 完成
+以上就是使用**邏輯迴歸**建立模型與效能測試流程，可以發現完全沒有調整任何參數，因基本邏輯迴歸不用調參數。
 
 ---
 class: inverse, center, middle
@@ -754,34 +1131,9 @@ class: inverse, center, middle
 
 
 ```r
-all_cores &lt;- parallel::detectCores(logical = FALSE)
+library(parallel)
 library(doParallel)
-```
-
-```
-## Loading required package: foreach
-```
-
-```
-## 
-## Attaching package: 'foreach'
-```
-
-```
-## The following objects are masked from 'package:purrr':
-## 
-##     accumulate, when
-```
-
-```
-## Loading required package: iterators
-```
-
-```
-## Loading required package: parallel
-```
-
-```r
+all_cores &lt;- detectCores(logical = FALSE)
 cl &lt;- makePSOCKcluster(all_cores)
 registerDoParallel(cl)
 ```
@@ -789,15 +1141,12 @@ registerDoParallel(cl)
 ---
 ## Step 2 設定用隨機森林建立模型以及要調整的參數
 
-這邊以隨機森林為例，用`rand_forest()`函數與`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法。
+- 用`rand_forest()`函數指定要建立隨機森林模型
+- 用`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，沒裝過`ranger`套件的話需要先裝
+  - "permutation": Consider a variable important if it has a positive effect on the prediction performance. (Mean decrease accuracy)
+  - "impurity": Gini index for classification 
+- 因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法
 
-在隨機森林`rand_forest()`函數中，可設定幾個參數，說明如下:
-
-- mtry: 在切割節點時，隨機抽取n個特徵，並從中選最適合的特徵當作節點
-- min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
-- trees: 建模要用幾棵樹
-
-在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用交叉驗證法(Cross Validation)來調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
 
 ```r
 install.packages("ranger")
@@ -808,9 +1157,38 @@ install.packages("ranger")
 rf_mod &lt;- 
   rand_forest(mtry = tune(), min_n = tune(), 
               trees = 1000) %&gt;% 
-  set_engine("ranger") %&gt;% 
+  set_engine("ranger",
+             importance= "permutation") %&gt;% 
   set_mode("classification")
+```
 
+---
+## Step 2 設定用隨機森林建立模型以及要調整的參數
+
+在隨機森林`rand_forest()`函數中，可設定幾個參數，說明如下:
+
+- mtry: 在切割節點時，隨機抽取n個特徵，並從中選最適合的特徵當作節點
+- min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
+- trees: 建模要用幾棵樹
+
+-- 
+
+在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用資料調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
+
+
+```r
+rf_mod &lt;- 
+* rand_forest(mtry = tune(), min_n = tune(),
+*             trees = 1000) %&gt;%
+  set_engine("ranger",
+             importance= "permutation") %&gt;% 
+  set_mode("classification")
+```
+---
+## Step 2 設定用隨機森林建立模型以及要調整的參數
+模型設定完成後，輸出如下
+
+```r
 rf_mod
 ```
 
@@ -822,45 +1200,86 @@ rf_mod
 ##   trees = 1000
 ##   min_n = tune()
 ## 
+## Engine-Specific Arguments:
+##   importance = permutation
+## 
 ## Computational engine: ranger
 ```
 
 ---
 ## Step 3 設定建模流程workflow
 
-建模流程同邏輯迴歸，將模型與資料前處理方法串接成一個工作流程
+建模流程同邏輯迴歸，將模型 (model，從step 2來的)與資料前處理方法(recipe，從前處理來的)串接成一個工作流程
 
 
 ```r
 rf_wflow &lt;- workflow() %&gt;%
-  add_model(rf_mod) %&gt;%
-  add_recipe(gen_recipe)
+* add_model(rf_mod) %&gt;%
+* add_recipe(gen_recipe)
+rf_wflow
+```
+
+```
+## ══ Workflow ═══════════════════════════════════════════════════════════════════
+## Preprocessor: Recipe
+## Model: rand_forest()
+## 
+## ── Preprocessor ───────────────────────────────────────────────────────────────
+## 3 Recipe Steps
+## 
+## ● step_dummy()
+## ● step_zv()
+## ● step_normalize()
+## 
+## ── Model ──────────────────────────────────────────────────────────────────────
+## Random Forest Model Specification (classification)
+## 
+## Main Arguments:
+##   mtry = tune()
+##   trees = 1000
+##   min_n = tune()
+## 
+## Engine-Specific Arguments:
+##   importance = permutation
+## 
+## Computational engine: ranger
 ```
 
 ---
 ## Step 4 參數調整組資料分割
 
-剛剛有提到我想要調整的參數為mtry以及min_n，調整的方法為交叉驗證法(Cross Validation)，這邊用`tidymodels`官網的圖來說明架構
-
-![](https://www.tidymodels.org/start/resampling/img/resampling.svg)&lt;!-- --&gt;
+- 剛剛有提到要以資料調整的參數**mtry**以及**min_n**
+- 首先將所有資料分成測試組訓練組，也就是本篇文章一開始做的切割
+- 為了調整參數，再切訓練組資料，分成的**調整訓練**組以及**調整測試**組。
+&lt;img src="https://www.tidymodels.org/start/resampling/img/resampling.svg" height="350px" style="display: block; margin: auto;" /&gt;
 [圖片來源](https://www.tidymodels.org/start/resampling/)
 
-在圖中，首先將所有資料分成測試組訓練組，也就是本篇文章一開始做的切割，為了調整參數，我們會再切訓練組的資料，做為測試各參數效能的**調整訓練**以及**調整測試**。
 
-切割**參數調整組**有很多種方法，可以用**bootstrap**法隨機抽，也可使用這邊的**交叉驗證**範例，交叉驗證的概念如下圖的下半部
 
-![](https://www.frontiersin.org/files/Articles/411217/fmicb-09-02393-HTML/image_m/fmicb-09-02393-g002.jpg)&lt;!-- --&gt;
+---
+## Step 4 參數調整組資料分割
+- 切割**參數調整組**有很多種方法，可以用**bootstrap**法隨機抽，也可使用這邊的**交叉驗證**(Cross Validation)範例
+- 圖片下半部為5-fold CV 的示意圖
+- 每份資料都會被拿來當作**調整訓練**以及**調整測試**組
+- 經過幾次測試後，用**調整測試**組的效能來決定一組最佳參數
+
+&lt;img src="https://www.frontiersin.org/files/Articles/411217/fmicb-09-02393-HTML/image_m/fmicb-09-02393-g002.jpg" height="350px" style="display: block; margin: auto;" /&gt;
 [圖片來源](https://doi.org/10.3389/fmicb.2018.02393)
 
-圖片下半部為5-fold Cross Validation的示意圖，可以看到每份資料都會被拿來當作**調整訓練**以及**調整測試**組，經過幾次測試後，用**調整測試**組的效能來決定一組最佳參數。
 
-這邊我們使用10-fold Cross Validation為例，先用`vfold_cv()`函數，設定分割基準為**訓練組**，要分10份`v=10`，分割時一樣要注意糖尿病的比例不能差太多
+---
+## Step 4 參數調整組資料分割
+- 使用10-fold CV 為例，先用`vfold_cv()`函數
+  - 設定分割基準為**訓練組**`DM_train`
+  - 要分10份`v=10`
+  - 分割時要注意糖尿病的比例不能差太多，因此設為分組依據 `strata = diabetes`
 
 
 ```r
 set.seed(345)
-folds &lt;- vfold_cv(DM_train, v = 10,
-                  strata = diabetes)
+*folds &lt;- vfold_cv(DM_train,
+*                 v = 10,
+*                 strata = diabetes)
 folds
 ```
 
@@ -883,12 +1302,578 @@ folds
 ---
 ## Step 5 調整參數
 
-完成分割後，可將之前的建模流程串接至`tune_grid()`函數，這個函數可以設定參數調整的方法，首先是調整要用的**參數調整組資料**`resamples = folds`，要測試幾組參數` grid = 50`，測試時要用什麼效能評估方式，這邊設定為Area under the ROC curve `metrics = metric_set(roc_auc)`。因為要重複訓練測試多次，因此這程式碼執行會需要一些時間。
+- 將Step 3所建立的建模流程`rf_wflow`串接至`tune_grid()`函數，設定參數調整的方法
+  - 設定切割好的**參數調整組**  `resamples = folds`
+  - 要測試幾組參數   `grid = 50`
+  - 測試時要用什麼效能評估方式，設定為Area under the ROC curve `metrics = metric_set(roc_auc)`
+- 因為要重複訓練測試多次，因此這程式碼執行會需要一些時間。
 
 
 ```r
 rf_res &lt;- 
   rf_wflow %&gt;% 
+  tune_grid(
+*   resamples = folds,
+*   grid = 50,
+*   metrics = metric_set(roc_auc),
+    control=control_resamples(save_pred = TRUE)
+    )
+```
+
+---
+## Step 5 調整參數
+執行完後，可用`collect_metrics()`查看各參數效能
+
+```r
+rf_res %&gt;%
+* collect_metrics()
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; mtry &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; min_n &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std_err &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8017105 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0240486 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8095088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0246020 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8059503 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0246762 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8025409 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0241123 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8102953 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0224259 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8092105 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0233824 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 5 調整參數
+也可畫個圖呈現參數調整對效能的影響，由圖可知在這個範例中min_n越大效能越好
+
+
+```r
+rf_res %&gt;%
+  collect_metrics() %&gt;%
+  mutate(mtry=factor(mtry)) %&gt;%
+  ggplot(aes(min_n, mean, color = mtry)) + 
+  geom_line(size=1)
+```
+
+&lt;img src="DataMining_files/figure-html/unnamed-chunk-74-1.png" height="350px" style="display: block; margin: auto;" /&gt;
+---
+## Step 5 調整參數
+搭配`show_best()`函數可呈現Area under the ROC curve最優的幾組參數
+
+
+```r
+rf_res %&gt;%
+* show_best("roc_auc")
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; mtry &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; min_n &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std_err &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8164415 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0211091 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8164327 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0225916 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8136023 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0216921 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8129415 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0210267 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8126287 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0230154 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+
+- 使用最佳參數(意即Area under the ROC curve最高的一組參數)來建立最終模型
+- 將剛剛調參數的結果`rf_res`輸入`select_best()`函數，選出最好的一組參數`best_rf`
+
+
+```r
+best_rf &lt;- rf_res %&gt;%
+* select_best("roc_auc")
+```
+
+```r
+best_rf
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; mtry &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; min_n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+將Step 3 建立的工作流程輸入`finalize_workflow()`函數，並指定要用剛剛選出的最佳參數`best_rf`，建立一個**最終建模流程**
+
+
+```r
+final_wflow &lt;- 
+  rf_wflow %&gt;% 
+* finalize_workflow(best_rf)
+
+final_wflow
+```
+
+```
+## ══ Workflow ═══════════════════════════════════════════════════════════════════
+## Preprocessor: Recipe
+## Model: rand_forest()
+## 
+## ── Preprocessor ───────────────────────────────────────────────────────────────
+## 3 Recipe Steps
+## 
+## ● step_dummy()
+## ● step_zv()
+## ● step_normalize()
+## 
+## ── Model ──────────────────────────────────────────────────────────────────────
+## Random Forest Model Specification (classification)
+## 
+## Main Arguments:
+##   mtry = 3
+##   trees = 1000
+##   min_n = 30
+## 
+## Engine-Specific Arguments:
+##   importance = permutation
+## 
+## Computational engine: ranger
+```
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+**最終建模流程** `final_wflow`建立後，即可用`fit()`建模，注意這邊用的是完整的訓練資料`DM_train`
+
+
+```r
+final_rf_model &lt;- 
+  final_wflow %&gt;%
+* fit(data = DM_train)
+
+final_rf_model
+```
+
+```
+## ══ Workflow [trained] ═════════════════════════════════════════════════════════
+## Preprocessor: Recipe
+## Model: rand_forest()
+## 
+## ── Preprocessor ───────────────────────────────────────────────────────────────
+## 3 Recipe Steps
+## 
+## ● step_dummy()
+## ● step_zv()
+## ● step_normalize()
+## 
+## ── Model ──────────────────────────────────────────────────────────────────────
+## Ranger result
+## 
+## Call:
+##  ranger::ranger(formula = formula, data = data, mtry = ~3L, num.trees = ~1000,      min.node.size = ~30L, importance = ~"permutation", num.threads = 1,      verbose = FALSE, seed = sample.int(10^5, 1), probability = TRUE) 
+## 
+## Type:                             Probability estimation 
+## Number of trees:                  1000 
+## Sample size:                      295 
+## Number of independent variables:  8 
+## Mtry:                             3 
+## Target node size:                 30 
+## Variable importance mode:         permutation 
+## Splitrule:                        gini 
+## OOB prediction error (Brier s.):  0.1572738
+```
+
+---
+## Step 7 用測試組資料驗證最終效能
+
+- 將剛剛訓練出來的模型`final_rf_model`輸入`predict()`函數
+- 並指定使用一開始分出的測試組`DM_test`產生預測結果
+- 注意要用**測試組資料**
+
+
+```r
+rf_pred &lt;- final_rf_model %&gt;% 
+* predict(DM_test)
+```
+
+```r
+rf_pred
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .pred_class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+## Step 7 用測試組資料驗證最終效能
+
+- 通常會直接將`predict()`函數預測結果與真實答案結合
+- 答案為**測試組資料**`DM_test`中的diabetes欄位
+- 將預測結果丟入`bind_cols()`，並指定與答案直接結合
+
+```r
+rf_pred &lt;- final_rf_model %&gt;%
+  predict(DM_test) %&gt;% 
+* bind_cols(DM_test %&gt;% select(diabetes))
+```
+
+```r
+rf_pred
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .pred_class &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; diabetes &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 7 用測試組資料驗證最終效能
+使用預測結果與真實答案計算正確率
+
+```r
+rf_pred %&gt;% 
+* accuracy(truth = diabetes,
+*         .pred_class)
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .estimate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8041237 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 7 用測試組資料驗證最終效能
+- 很多時候我們需要回報**Area under the ROC curve**
+- 此時不能直接採用模型預測pos或neg的結果
+- 需要的連續性的預測數值來畫**ROC curve**
+- 將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
+
+
+```r
+rf_pred &lt;- final_rf_model %&gt;%
+  predict(DM_test,
+*         type = "prob")%&gt;%
+  bind_cols(DM_test %&gt;% select(diabetes)) 
+```
+
+```r
+rf_pred
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; .pred_neg &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .pred_pos &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; diabetes &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.3573604 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6426396 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.5301730 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4698270 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.6717796 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3282204 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1584287 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8415713 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1206967 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8793033 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1809000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8191000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+## Step 7 用測試組資料驗證最終效能
+將預測結果`lr_pred`丟入`roc_curve()`，加上`autoplot()`畫ROC curve
+
+```r
+rf_pred %&gt;% 
+* roc_curve(truth = diabetes,
+*           .pred_pos) %&gt;%
+* autoplot()
+```
+
+&lt;img src="DataMining_files/figure-html/unnamed-chunk-93-1.png" height="350px" style="display: block; margin: auto;" /&gt;
+---
+## Step 7 用測試組資料驗證最終效能
+當然也能用`roc_auc()`算Area under the ROC curve
+
+```r
+rf_pred %&gt;% 
+* roc_auc(truth = diabetes,
+*         .pred_pos)
+```
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .estimate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9139423 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+## Step 8 解釋模型
+- 查看最終模型`final_rf_model`中，各變數的重要性
+- 用`pull_workflow_fit()`將模型資訊取出
+- 丟入`vip()`查看各變數重要性
+
+```r
+library(vip)
+final_rf_model %&gt;%
+  pull_workflow_fit() %&gt;%
+  vi()
+```
+
+```
+## # A tibble: 8 x 2
+##   Variable Importance
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 glucose    0.0452  
+## 2 age        0.0210  
+## 3 insulin    0.0196  
+## 4 mass       0.00865 
+## 5 pregnant   0.00522 
+## 6 triceps    0.00281 
+## 7 pedigree   0.00200 
+## 8 pressure  -0.000999
+```
+---
+## Step 8 解釋模型
+- 查看最終模型`final_rf_model`中，各變數的重要性
+- 用`pull_workflow_fit()`將模型資訊取出
+- 丟入`vip()`查看各變數重要性
+
+```r
+library(vip)
+final_rf_model %&gt;%
+  pull_workflow_fit() %&gt;%
+  vip()
+```
+
+&lt;img src="DataMining_files/figure-html/unnamed-chunk-97-1.png" height="350px" style="display: block; margin: auto;" /&gt;
+---
+# 完成
+以上就是使用**隨機森林**建立模型、調整參數以及與效能測試流程，多了使用交叉驗證法調整參數的步驟。
+
+
+
+---
+class: inverse, center, middle
+
+# 正紅的XGBoost模型建立、參數調整與效能評估範例
+---
+## XGBoost不分步驟，一次搞定 (1/3)
+
+
+```r
+#install.packages("xgboost")
+xgb_mod &lt;- 
+* boost_tree(mtry = tune(),
+*            min_n = tune(),
+*             trees = 1000) %&gt;%
+* set_engine("xgboost",
+*            importance= "permutation") %&gt;%
+  set_mode("classification")
+xgb_wflow &lt;- workflow() %&gt;%
+  add_model(xgb_mod) %&gt;%  
+  add_recipe(gen_recipe) 
+xgb_res &lt;- 
+  xgb_wflow %&gt;% 
   tune_grid(
     resamples = folds,
     grid = 50,
@@ -900,737 +1885,104 @@ rf_res &lt;-
 ```
 ## i Creating pre-processing data to finalize unknown parameter: mtry
 ```
-
-
-執行完後，可用`collect_metrics()`查看各參數效能
-
-
-```r
-rf_res %&gt;%
-  collect_metrics()
-```
-
-```
-## # A tibble: 49 x 7
-##     mtry min_n .metric .estimator  mean     n std_err
-##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-##  1     1     5 roc_auc binary     0.801    10  0.0270
-##  2     1    15 roc_auc binary     0.806    10  0.0256
-##  3     1    27 roc_auc binary     0.809    10  0.0255
-##  4     2    11 roc_auc binary     0.804    10  0.0226
-##  5     2    21 roc_auc binary     0.813    10  0.0236
-##  6     2    23 roc_auc binary     0.808    10  0.0218
-##  7     2    29 roc_auc binary     0.811    10  0.0229
-##  8     2    32 roc_auc binary     0.810    10  0.0245
-##  9     2    35 roc_auc binary     0.810    10  0.0236
-## 10     2    36 roc_auc binary     0.815    10  0.0244
-## # … with 39 more rows
-```
-
-也可畫個圖呈現參數調整對效能的影響，由圖可知在這個範例中min_n越大效能越好
-
-
-```r
-rf_res %&gt;%
-  collect_metrics() %&gt;%
-  mutate(mtry = factor(mtry)) %&gt;%
-  ggplot(aes(min_n, mean, color = mtry)) + 
-  geom_line(size=1) +
-  scale_x_log10(labels = scales::label_number()) 
-```
-
-![](DataMining_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
-
-搭配`show_best()`函數可呈現Area under the ROC curve最優的幾組參數
-
-
-```r
-rf_res %&gt;%
-  show_best("roc_auc")
-```
-
-```
-## # A tibble: 5 x 7
-##    mtry min_n .metric .estimator  mean     n std_err
-##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-## 1     2    36 roc_auc binary     0.815    10  0.0244
-## 2     3    37 roc_auc binary     0.815    10  0.0235
-## 3     2    21 roc_auc binary     0.813    10  0.0236
-## 4     5    22 roc_auc binary     0.813    10  0.0215
-## 5     4    33 roc_auc binary     0.813    10  0.0217
-```
-
-
 ---
-## Step 6 使用最佳參數與訓練組資料建立最終模型
-
-在完成參數調整後，我們會使用最佳參數(意即Area under the ROC curve最高的一組參數)來建立最終模型，用`select_best()`函數可選出最好的一組參數`best_rf`
+## XGBoost不分步驟，一次搞定 (2/3)
 
 
 ```r
-best_rf &lt;- rf_res %&gt;%
+best_xgb &lt;- xgb_res %&gt;%
   select_best("roc_auc")
-best_rf
-```
-
-```
-## # A tibble: 1 x 2
-##    mtry min_n
-##   &lt;int&gt; &lt;int&gt;
-## 1     2    36
-```
-
-為了將參數節合至原有的建模流程，可用`finalize_workflow()`函數輸入剛剛選出的最佳參數`best_rf`，建立一個**最終建模流程**
-
-
-```r
 final_wflow &lt;- 
-  rf_wflow %&gt;% 
-  finalize_workflow(best_rf)
-
-final_wflow
-```
-
-```
-## ══ Workflow ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
-## Preprocessor: Recipe
-## Model: rand_forest()
-## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-## 3 Recipe Steps
-## 
-## ● step_dummy()
-## ● step_zv()
-## ● step_normalize()
-## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-## Random Forest Model Specification (classification)
-## 
-## Main Arguments:
-##   mtry = 2
-##   trees = 1000
-##   min_n = 36
-## 
-## Computational engine: ranger
-```
-
-**最終建模流程**建立後，即可用`fit()`建模，注意這邊用的是完整的訓練資料`DM_train`
-
-
-```r
-final_rf_model &lt;- 
+  xgb_wflow %&gt;% 
+  finalize_workflow(best_xgb)
+final_xgb_model &lt;- 
   final_wflow %&gt;%
   fit(data = DM_train) 
-
-final_rf_model
-```
-
-```
-## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════════════════════════════════════
-## Preprocessor: Recipe
-## Model: rand_forest()
-## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-## 3 Recipe Steps
-## 
-## ● step_dummy()
-## ● step_zv()
-## ● step_normalize()
-## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-## Ranger result
-## 
-## Call:
-##  ranger::ranger(formula = formula, data = data, mtry = ~2L, num.trees = ~1000,      min.node.size = ~36L, num.threads = 1, verbose = FALSE, seed = sample.int(10^5,          1), probability = TRUE) 
-## 
-## Type:                             Probability estimation 
-## Number of trees:                  1000 
-## Sample size:                      295 
-## Number of independent variables:  8 
-## Mtry:                             2 
-## Target node size:                 36 
-## Variable importance mode:         none 
-## Splitrule:                        gini 
-## OOB prediction error (Brier s.):  0.1577833
-```
-
----
-## Step 7 用測試組資料驗證最終模型效能
-
-使用`predict()`函數，用剛剛訓練出來的模型`final_rf_model`以及一開始分出的測試組`DM_test`產生預測結果，注意這邊要用測試組資料
-
-
-```r
-rf_pred &lt;- final_rf_model %&gt;% 
-  predict(DM_test)
-rf_pred
-```
-
-```
-## # A tibble: 97 x 1
-##    .pred_class
-##    &lt;fct&gt;      
-##  1 pos        
-##  2 neg        
-##  3 neg        
-##  4 pos        
-##  5 pos        
-##  6 pos        
-##  7 neg        
-##  8 neg        
-##  9 neg        
-## 10 neg        
-## # … with 87 more rows
-```
-
-將預測結果與答案結合
-
-```r
-rf_pred &lt;- final_rf_model %&gt;%
-  predict(DM_test) %&gt;% 
-  bind_cols(DM_test %&gt;% select(diabetes)) 
-rf_pred
-```
-
-```
-## # A tibble: 97 x 2
-##    .pred_class diabetes
-##    &lt;fct&gt;       &lt;fct&gt;   
-##  1 pos         pos     
-##  2 neg         pos     
-##  3 neg         neg     
-##  4 pos         pos     
-##  5 pos         pos     
-##  6 pos         pos     
-##  7 neg         neg     
-##  8 neg         neg     
-##  9 neg         neg     
-## 10 neg         neg     
-## # … with 87 more rows
-```
-
-使用預測結果與真實答案計算正確率
-
-```r
-rf_pred %&gt;% 
-  accuracy(truth = diabetes, 
-          .pred_class)
-```
-
-```
-## # A tibble: 1 x 3
-##   .metric  .estimator .estimate
-##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-## 1 accuracy binary         0.804
-```
-
-但很多時候我們需要Area under the ROC curve，此時我們需要的不是直接pos或neg的結果，我們需要的是連續性的預測數值，這邊可將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
-
-
-```r
-rf_pred &lt;- final_rf_model %&gt;%
+xgb_pred &lt;- final_xgb_model %&gt;%
   predict(DM_test,
           type = "prob")%&gt;% 
   bind_cols(DM_test %&gt;% select(diabetes)) 
-rf_pred
 ```
+---
+## XGBoost不分步驟，一次搞定 (3/3)
 
-```
-## # A tibble: 97 x 3
-##    .pred_neg .pred_pos diabetes
-##        &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   
-##  1     0.349    0.651  pos     
-##  2     0.541    0.459  pos     
-##  3     0.683    0.317  neg     
-##  4     0.176    0.824  pos     
-##  5     0.153    0.847  pos     
-##  6     0.230    0.770  pos     
-##  7     0.830    0.170  neg     
-##  8     0.959    0.0410 neg     
-##  9     0.767    0.233  neg     
-## 10     0.651    0.349  neg     
-## # … with 87 more rows
-```
-
-
-得到各組預測值後，可用`roc_curve()`畫ROC curve
 
 ```r
-rf_pred %&gt;% 
+xgb_pred %&gt;% 
   roc_curve(truth = diabetes, 
             .pred_pos) %&gt;% 
   autoplot()
 ```
 
-![](DataMining_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
-
-當然也能用`roc_auc()`算Area under the ROC curve
-
-```r
-rf_pred %&gt;% 
-  roc_auc(truth = diabetes, 
-          .pred_pos)
-```
-
-```
-## # A tibble: 1 x 3
-##   .metric .estimator .estimate
-##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 roc_auc binary         0.916
-```
-
-
-以上就是使用隨機森林建立模型、調整參數以及與效能測試流程，多了使用交叉驗證法調整參數的步驟。
-
-
+&lt;img src="DataMining_files/figure-html/unnamed-chunk-100-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 ---
-# Hello World
-
-Install the **xaringan** package from [Github](https://github.com/yihui/xaringan):
+class: inverse, center, middle
+# 上課教的SVM模型建立、參數調整與效能評估範例
+---
+## SVM不分步驟，一次搞定 (1/3)
 
 
 ```r
-devtools::install_github("yihui/xaringan")
+#install.packages("kernlab")
+svm_mod &lt;- 
+* svm_rbf(cost=tune(),
+*         rbf_sigma=tune(),
+*         margin=tune()) %&gt;%
+* set_engine("kernlab",
+*            importance= "permutation") %&gt;%
+  set_mode("classification")
+svm_wflow &lt;- workflow() %&gt;%
+  add_model(svm_mod) %&gt;%  
+  add_recipe(gen_recipe) 
+svm_res &lt;- 
+  svm_wflow %&gt;% 
+  tune_grid(
+    resamples = folds,
+    grid = 50,
+    metrics = metric_set(roc_auc),
+    control=control_resamples(save_pred = TRUE)
+    )
 ```
-
---
-
-You are recommended to use the [RStudio IDE](https://www.rstudio.com/products/rstudio/), but you do not have to.
-
-- Create a new R Markdown document from the menu `File -&gt; New File -&gt; R Markdown -&gt; From Template -&gt; Ninja Presentation`;&lt;sup&gt;1&lt;/sup&gt;
-
---
-
-- Click the `Knit` button to compile it;
-
---
-
-- or use the [RStudio Addin](https://rstudio.github.io/rstudioaddins/)&lt;sup&gt;2&lt;/sup&gt; "Infinite Moon Reader" to live preview the slides (every time you update and save the Rmd document, the slides will be automatically reloaded in RStudio Viewer.
-
-.footnote[
-[1] 中文用户请看[这份教程](http://slides.yihui.org/xaringan/zh-CN.html)
-
-[2] See [#2](https://github.com/yihui/xaringan/issues/2) if you do not see the template or addin in RStudio.
-]
-
 ---
-background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
-background-position: 50% 50%
-class: center, bottom, inverse
-
-# You only live once!
-
----
-
-# Hello Ninja
-
-As a presentation ninja, you certainly should not be satisfied by the "Hello World" example. You need to understand more about two things:
-
-1. The [remark.js](https://remarkjs.com) library;
-
-1. The **xaringan** package;
-
-Basically **xaringan** injected the chakra of R Markdown (minus Pandoc) into **remark.js**. The slides are rendered by remark.js in the web browser, and the Markdown source needed by remark.js is generated from R Markdown (**knitr**).
-
----
-
-# remark.js
-
-You can see an introduction of remark.js from [its homepage](https://remarkjs.com). You should read the [remark.js Wiki](https://github.com/gnab/remark/wiki) at least once to know how to
-
-- create a new slide (Markdown syntax&lt;sup&gt;*&lt;/sup&gt; and slide properties);
-
-- format a slide (e.g. text alignment);
-
-- configure the slideshow;
-
-- and use the presentation (keyboard shortcuts).
-
-It is important to be familiar with remark.js before you can understand the options in **xaringan**.
-
-.footnote[[*] It is different with Pandoc's Markdown! It is limited but should be enough for presentation purposes. Come on... You do not need a slide for the Table of Contents! Well, the Markdown support in remark.js [may be improved](https://github.com/gnab/remark/issues/142) in the future.]
-
----
-background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
-background-size: cover
-class: center, bottom, inverse
-
-# I was so happy to have discovered remark.js!
-
----
-class: inverse, middle, center
-
-# Using xaringan
-
----
-
-# xaringan
-
-Provides an R Markdown output format `xaringan::moon_reader` as a wrapper for remark.js, and you can use it in the YAML metadata, e.g.
-
-```yaml
----
-title: "A Cool Presentation"
-output:
-  xaringan::moon_reader:
-    yolo: true
-    nature:
-      autoplay: 30000
----
-```
-
-See the help page `?xaringan::moon_reader` for all possible options that you can use.
-
----
-
-# remark.js vs xaringan
-
-Some differences between using remark.js (left) and using **xaringan** (right):
-
-.pull-left[
-1. Start with a boilerplate HTML file;
-
-1. Plain Markdown;
-
-1. Write JavaScript to autoplay slides;
-
-1. Manually configure MathJax;
-
-1. Highlight code with `*`;
-
-1. Edit Markdown source and refresh browser to see updated slides;
-]
-
-.pull-right[
-1. Start with an R Markdown document;
-
-1. R Markdown (can embed R/other code chunks);
-
-1. Provide an option `autoplay`;
-
-1. MathJax just works;&lt;sup&gt;*&lt;/sup&gt;
-
-1. Highlight code with `{{}}`;
-
-1. The RStudio addin "Infinite Moon Reader" automatically refreshes slides on changes;
-]
-
-.footnote[[*] Not really. See next page.]
-
----
-
-# Math Expressions
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
-
-```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
-
-`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
-
----
-
-# R Code
+## SVM不分步驟，一次搞定 (2/3)
 
 
 ```r
-# a boring regression
-fit = lm(dist ~ 1 + speed, data = cars)
-coef(summary(fit))
+best_svm &lt;- svm_res %&gt;%
+  select_best("roc_auc")
+final_wflow &lt;- 
+  svm_wflow %&gt;% 
+  finalize_workflow(best_svm)
+final_svm_model &lt;- 
+  final_wflow %&gt;%
+  fit(data = DM_train) 
+svm_pred &lt;- final_svm_model %&gt;%
+  predict(DM_test,
+          type = "prob")%&gt;% 
+  bind_cols(DM_test %&gt;% select(diabetes)) 
 ```
-
-```
-#               Estimate Std. Error   t value     Pr(&gt;|t|)
-# (Intercept) -17.579095  6.7584402 -2.601058 1.231882e-02
-# speed         3.932409  0.4155128  9.463990 1.489836e-12
-```
-
-```r
-dojutsu = c('地爆天星', '天照', '加具土命', '神威', '須佐能乎', '無限月読')
-grep('天', dojutsu, value = TRUE)
-```
-
-```
-# [1] "地爆天星" "天照"
-```
-
 
 ---
-
-# Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+## SVM不分步驟，一次搞定 (3/3)
 
 
 ```r
-knitr::kable(head(iris), format = 'html')
+svm_pred %&gt;% 
+  roc_curve(truth = diabetes, 
+            .pred_pos) %&gt;% 
+  autoplot()
 ```
 
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; Sepal.Length &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Sepal.Width &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Petal.Length &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Petal.Width &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Species &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
+&lt;img src="DataMining_files/figure-html/unnamed-chunk-103-1.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 ---
+# tidymodels總結
 
-# HTML Widgets
-
-I have not thoroughly tested HTML widgets against **xaringan**. Some may work well, and some may not. It is a little tricky.
-
-Similarly, the Shiny mode (`runtime: shiny`) does not work. I might get these issues fixed in the future, but these are not of high priority to me. I never turn my presentation into a Shiny app. When I need to demonstrate more complicated examples, I just launch them separately. It is convenient to share slides with other people when they are plain HTML/JS applications.
-
-See the next page for two HTML widgets.
-
----
-
-
-```r
-library(leaflet)
-leaflet() %&gt;% addTiles() %&gt;% setView(-93.65, 42.0285, zoom = 17)
-```
-
-<div id="htmlwidget-1aed4d7854ddc90492fa" style="width:100%;height:432px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1aed4d7854ddc90492fa">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]}],"setView":[[42.0285,-93.65],17,[]]},"evals":[],"jsHooks":[]}</script>
-
----
-
-
-```r
-DT::datatable(
-  head(iris, 10),
-  fillContainer = FALSE, options = list(pageLength = 8)
-)
-```
-
-<div id="htmlwidget-5b188cb1c6cd1a172f75" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5b188cb1c6cd1a172f75">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9],[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1],[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5],[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1],["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sepal.Length<\/th>\n      <th>Sepal.Width<\/th>\n      <th>Petal.Length<\/th>\n      <th>Petal.Width<\/th>\n      <th>Species<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
-
----
-
-# Some Tips
-
-- When you use the "Infinite Moon Reader" addin in RStudio, your R session will be blocked by default. You can click the red button on the right of the console to stop serving the slides, or use the _daemonized_ mode so that it does not block your R session. To do the latter, you can set the option
-
-    ```r
-    options(servr.daemon = TRUE)
-    ```
-    
-    in your current R session, or in `~/.Rprofile` so that it is applied to all future R sessions. I do the latter by myself.
-    
-    To know more about the web server, see the [**servr**](https://github.com/yihui/servr) package.
-
---
-
-- Do not forget to try the `yolo` option of `xaringan::moon_reader`.
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        yolo: true
-    ```
-
----
-
-# Some Tips
-
-- Slides can be automatically played if you set the `autoplay` option under `nature`, e.g. go to the next slide every 30 seconds in a lightning talk:
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          autoplay: 30000
-    ```
-
---
-
-- A countdown timer can be added to every page of the slides using the `countdown` option under `nature`, e.g. if you want to spend one minute on every page when you give the talk, you can set:
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          countdown: 60000
-    ```
-
-    Then you will see a timer counting down from `01:00`, to `00:59`, `00:58`, ... When the time is out, the timer will continue but the time turns red.
-    
----
-
-# Some Tips
-
-- The title slide is created automatically by **xaringan**, but it is just another remark.js slide added before your other slides.
-
-    The title slide is set to `class: center, middle, inverse, title-slide` by default. You can change the classes applied to the title slide with the `titleSlideClass` option of `nature` (`title-slide` is always applied).
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          titleSlideClass: [top, left, inverse]
-    ```
-    
---
-
-- If you'd like to create your own title slide, disable **xaringan**'s title slide with the `seal = FALSE` option of `moon_reader`.
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        seal: false
-    ```
-
----
-
-# Some Tips
-
-- There are several ways to build incremental slides. See [this presentation](https://slides.yihui.org/xaringan/incremental.html) for examples.
-
-- The option `highlightLines: true` of `nature` will highlight code lines that start with `*`, or are wrapped in `{{ }}`, or have trailing comments `#&lt;&lt;`;
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          highlightLines: true
-    ```
-
-    See examples on the next page.
-
----
-
-# Some Tips
-
-
-.pull-left[
-An example using a leading `*`:
-
-    ```r
-    if (TRUE) {
-    ** message("Very important!")
-    }
-    ```
-Output:
-```r
-if (TRUE) {
-* message("Very important!")
-}
-```
-
-This is invalid R code, so it is a plain fenced code block that is not executed.
-]
-
-.pull-right[
-An example using `{{}}`:
-
-````
-```{r tidy=FALSE}
-if (TRUE) {
-*{{ message("Very important!") }}
-}
-```
-````
-Output:
-
-```r
-if (TRUE) {
-* message("Very important!") 
-}
-```
-
-```
-## Very important!
-```
-
-It is valid R code so you can run it. Note that `{{}}` can wrap an R expression of multiple lines.
-]
-
----
-
-# Some Tips
-
-An example of using the trailing comment `#&lt;&lt;` to highlight lines:
-
-````markdown
-```{r tidy=FALSE}
-library(ggplot2)
-ggplot(mtcars) + 
-  aes(mpg, disp) + 
-  geom_point() +   #&lt;&lt;
-  geom_smooth()    #&lt;&lt;
-```
-````
-
-Output:
-
-
-```r
-library(ggplot2)
-ggplot(mtcars) + 
-  aes(mpg, disp) + 
-* geom_point() +
-* geom_smooth()
-```
+- [官方說明文件](https://www.tidymodels.org/)完整
+- 建模、調參數、預測流程架構清楚
+- 目前支援21大類模型，可透過[模型清單](https://www.tidymodels.org/find/parsnip/)查找，自行替換模型
+- 不知道每個模型有何參數可調？一樣可透過[參數清單](https://www.tidymodels.org/find/parsnip/#model-args)查找
+- 不知道參數意義？了解各模型的原理還是很重要的！
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

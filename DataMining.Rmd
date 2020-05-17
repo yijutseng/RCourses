@@ -2,7 +2,7 @@
 title: "Case Studies in Data Mining with R"
 author: "Yi-Ju Tseng"
 institute: "Chung Gung University"
-date: "2020/05/15"
+date: "2020/05/18"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -222,24 +222,24 @@ class: inverse, center, middle
 
 ---
 ## 醫學資料分析中的敘述性統計
-
-
-- 通常是論文中的第一個表格
-```{r echo=FALSE,out.height="350px",fig.align='center'}
+- 通常是論文中的必要表格
+- 描述有病沒病的兩群人的基本資料，並做**統計檢定**
+```{r echo=FALSE,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneExample.png")
 ```
 [Source](https://www.sciencedirect.com/science/article/abs/pii/S1386505618311213)
+
 ---
 ## 單變量分析
-
-
+- 使用`tableone`套件完成表格，第一次使用前要先安裝
+- 將去除空值的資料`PimaIndiansDiabetes2`放入`CreateTableOne()`函數
 ```{r}
 library(tableone)
 tableone<-
-  CreateTableOne(data=PimaIndiansDiabetes2)
+  CreateTableOne(data=PimaIndiansDiabetes2)#<<
 print(tableone)
 ```
-
+- [tableone使用說明](https://cran.r-project.org/web/packages/tableone/vignettes/introduction.html)
 ---
 ## 單變量分析 - 依outcome分組
 
@@ -263,89 +263,233 @@ print(tableone,quote = T)#<<
 ```
 
 ---
-## 單變量分析 - Excel處理步驟
+## 單變量分析 - Excel處理步驟 (1/7)
 
+調整Console視窗大小，讓結果不被強迫換行
+
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneR.png")
+```
+
+---
+## 單變量分析 - Excel處理步驟 (2/7)
+
+全選表格
+
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRSelect.png")
+```
+
+---
+## 單變量分析 - Excel處理步驟 (3/7)
+
+打開Excel貼上
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcel.png")
+```
+---
+## 單變量分析 - Excel處理步驟 (4/7)
+打開Excel->資料->資料剖析功能
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelFormat.png")
+```
+---
+## 單變量分析 - Excel處理步驟 (5/7)
+設定使用分隔符號切割資料
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelDel.png")
+```
+---
+## 單變量分析 - Excel處理步驟 (6/7)
+用空格當作分隔符號，並將文字辨識符號設為雙引號
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelDelSetting.png")
+```
+
+
+---
+## 單變量分析 - Excel處理步驟 (7/7)
+完成！！
+```{r echo=FALSE,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneFinal.png")
+```
 ---
 class: inverse, center, middle
 
-# 開始建模
+# 開始建模 - 策略說明與資料分割
 
 ---
 
 ## 訓練/調整與驗證模型效能策略
-
-JAMA在2019年刊登一篇有趣的文章，名稱為How to Read Articles That Use Machine Learning - Users’ Guides to the Medical Literature [下載](https://jamanetwork.com/journals/jama/fullarticle/2754798)，內文中有提到在機器學習時代，如何建立與預測模型，跟之前又有什麼不同，並用下圖來解釋差異
-
-```{r echo=F}
+How to Read Articles That Use Machine Learning - Users’ Guides to the Medical Literature [JAMA](https://jamanetwork.com/journals/jama/fullarticle/2754798)，說明在機器學習時代如何建立預測模型，跟傳統的不同
+```{r echo=F,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
 ```
-[圖片來源](https://jamanetwork.com/journals/jama/fullarticle/2754798)
+---
 
+## 調整參數的必要性
 
-在所謂的"非"機器學習模型(圖上半部)，通常可分訓練組與測試組，在作者定義為Development set和Validation set，重要的概念是訓練模型時，一定要記得先把測試組資料分出來，不可以用到這部分資料來訓練模型，最後才能得到真實的預測結果 (完全沒偷看答案的意思)。
-
-在圖下半部，作者將此法命名為**3-step process**，主要差異是在訓練模型時多了一組**參數調整資料集**，原因是因為在多種機器學習模型中，有可調整的參數，在圖中稱為Hyperparameters，為了讓調整效果更好，會將訓練組再切分成小組，用來決定**最佳參數**，決定好以後，才用所有訓練組資料搭配最佳參數訓練模型，最後再用測試組做測試。
-
-以下用邏輯迴歸歸Logistic Regression示範此圖上半部**不調參數**的作法，以及用隨機森林Random Forest示範此圖下半部**需要調整參數**的作法。
+- 在傳統"非"機器學習模型(圖上半部)，分訓練組與測試組
+- 訓練模型時，記得不可以用**測試組**資料來訓練模型，才能得到真實的預測結果 (完全沒偷看答案的意思)
+```{r echo=F,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
+```
 
 ---
-# 訓練組、測試組資料分割
 
-不管要不要調參數，都需要分割訓練組與測試組，因此在進入兩個範例前，先將訓練組與測試組切好。
+## 調整參數的必要性
+- 在圖下半，主要差異是在訓練模型時多了一組**參數調整資料集**
+- 因為在多種機器學習模型中，有可調整的參數
+- 為了讓參數調整效果更好，會將訓練組再切分成小組，用來決定**最佳參數**
+- 決定**最佳參數**以後，用**訓練組**搭配最佳參數訓練模型，最後用**測試組**測試
+```{r echo=F,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
+```
+---
 
-用`initial_split()`函數將資料分成訓練組與測試組，第一個參數放資料，第二個參數`prop`放訓練組測試組比例，第三個參數`strata`放分組抽樣依據。需要設定分組抽樣依據是因為若是整批資料隨機抽樣，很有可能在測試組或是訓練組會少一整個組別的資料(剛好都沒抽到的意思)，所以就分組，個別抽某個比例的人當訓練組，剩下的就當測試組。切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
+## 調整參數的必要性
 
-這邊要特別注意的是，因為`initial_split()`函數有隨機的概念，為了讓每次的實驗結果相同，我們會在有隨機事件前設定seed，作為隨機的依據，讓隨機每次都一樣，才不會每次跑都是不一樣的結果，這樣就無法產生可重複的實驗結果。
+本課程範例 :
+
+- **邏輯迴歸Logistic Regression**示範此圖上半部**不調參數**的作法
+- **隨機森林Random Forest**示範此圖下半部**需要調整參數**的作法
+```{r echo=F,out.height="400px",fig.align='center'}
+knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
+```
+---
+## 訓練組、測試組資料分割
+
+- 不管要不要調參數，都需要分割**訓練組**與**測試組**
+- 用`initial_split()`函數將資料分成訓練組與測試組
+  - 第一個參數放資料`PimaIndiansDiabetes2`
+  - 第二個參數`prop`放訓練組測試組比例`(3/4)`
+  - 第三個參數`strata`放分組抽樣依據`diabetes`，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
+
+```{r}
+set.seed(123)
+splits<- initial_split(PimaIndiansDiabetes2,  #<<
+                       prop=(3/4),#<<
+                       strata = diabetes)#<<
+DM_train<- training(splits)
+DM_test<- testing(splits)
+```
+
+---
+## 訓練組、測試組資料分割
+
+- 不管要不要調參數，都需要分割訓練組與測試組
+- 用`initial_split()`函數將資料分成訓練組與測試組
+  - 第一個參數放資料
+  - 第二個參數`prop`放訓練組測試組比例
+  - 第三個參數`strata`放分組抽樣依據，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
+- 切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
 
 ```{r}
 set.seed(123)
 splits<- initial_split(PimaIndiansDiabetes2, 
                        prop=(3/4),
                        strata = diabetes)
+DM_train<- training(splits)#<<
+DM_test<- testing(splits)#<<
+```
+---
+## 訓練組、測試組資料分割
+
+- `initial_split()`函數有隨機的概念
+- 為了讓每次的實驗結果相同，要**在有隨機事件前設定seed** `set.seed()`
+- seed為隨機的依據，讓隨機每次都一樣，確保實驗結果可重複
+
+```{r}
+set.seed(123)#<<
+splits<- initial_split(PimaIndiansDiabetes2, 
+                       prop=(3/4),
+                       strata = diabetes)
 DM_train<- training(splits)
 DM_test<- testing(splits)
 ```
+---
+## 查看分組結果
 
+.pull-left[
 分組完後，查看訓練組的生病比例
 ```{r}
 DM_train %>% 
   count(diabetes) %>% 
   mutate(prop = n/sum(n))
 ```
+]
 
+--
+.pull-right[
 查看測試組的生病比例
 ```{r}
 DM_test %>% 
   count(diabetes) %>% 
   mutate(prop = n/sum(n))
 ```
+]
 
 ---
-# 建立資料前處理“食譜”
+class: inverse, center, middle
 
-資料前處理也是建立兩種模型都必須經歷的方法，因此提到最前方說明，前處理有很多方法，包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等。
+# 開始建模 - 資料前處理
 
-首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`，要注意這邊只能用**訓練組資料**，不能用全部的資料。公式的意思是用`~`前方的`diabetes`當成outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features，為預測基礎)。
+---
+## 建立資料前處理“食譜”
 
-完成模型公式與資料設定後，就開始逐一加上想要做的資料前處理方法，在這邊列舉幾項我認為以此案例可能需要做的前處理
+- 資料前處理也是建立兩種模型都必須經歷的方法
+- 前處理包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等
 
-- `step_naomit(everything(), skip = TRUE)` 如果沒有在一開始將NA資料刪掉，通常要去除NA值
-- `step_rose(diabetes)` 其實這個資料有病沒病的人沒差太多，只是呈現一下可以在此步驟設定oversampleing或是undersampling，這邊是指使用ROSE作為oversampling的演算法
-- `step_dummy(all_nominal(), -all_outcomes())` 將所有的類別變項轉成虛擬變項，除了Outcome以外
-- `step_zv(all_predictors())` 若有變項都是一樣的值，刪掉。舉例來說，若是整個資料都是女性，那性別欄位就不用拿來當作features了
-- `step_normalize(all_predictors())` 將所有數值變項正規化
+--
 
-還有很多其他的前處理方法，可以參考`recipe()`函數的[說明文件](https://recipes.tidymodels.org/reference/recipe.html)
+- 首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`
+  - 注意這邊只能用**訓練組資料**，不能用全部的資料
+  - 公式：用`~`前方的`diabetes`當outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features)
+
 
 ```{r}
 gen_recipe <- 
-  recipe(diabetes ~ ., data = DM_train) %>% 
+  recipe(diabetes ~ ., data = DM_train) %>% #<<
   step_dummy(all_nominal(), -all_outcomes()) %>% 
   step_zv(all_predictors()) %>% 
   step_normalize(all_predictors())
 summary(gen_recipe)
 ```
 
+---
+## 建立資料前處理“食譜”
+
+完成模型公式與資料設定後，就開始逐一加上想要做的資料前處理方法
+
+
+- `step_dummy(all_nominal(), -all_outcomes())` 將所有的類別變項轉成虛擬變項，除了Outcome以外
+- `step_zv(all_predictors())` 若有變項都是一樣的值，刪掉。舉例來說，若是整個資料都是女性，那性別欄位就不用拿來當作features了
+- `step_normalize(all_predictors())` 將所有數值變項正規化
+
+```{r}
+gen_recipe <- 
+  recipe(diabetes ~ ., data = DM_train) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%  #<<
+  step_zv(all_predictors()) %>% #<<
+  step_normalize(all_predictors())#<<
+summary(gen_recipe)
+```
+
+---
+## 建立資料前處理“食譜”
+還有很多其他的前處理方法：
+- `step_naomit(everything(), skip = TRUE)` 如果沒有在一開始將NA資料刪掉，通常要去除NA值
+- `step_rose(diabetes)` 設定oversampleing或是undersampling，範例用ROSE作為oversampling的演算法
+- 參考`recipe()`函數的[說明文件](https://recipes.tidymodels.org/reference/recipe.html)
+
+```{r}
+gen_recipe <- 
+  recipe(diabetes ~ ., data = DM_train) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%  
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors())
+summary(gen_recipe) #<<
+```
 ---
 class: inverse, center, middle
 
@@ -354,96 +498,169 @@ class: inverse, center, middle
 ---
 ## Step 1 設定用邏輯迴建立模型
 
-這邊以邏輯迴歸為例，用`logistic_reg()`函數與`set_engine("glm")`設定模型建立演算法為邏輯迴歸
+- 以邏輯迴歸為例
+- 用`logistic_reg()`函數指定使用邏輯迴歸
+- 用`set_engine("glm")`設定模型建立演算法
 
 ```{r}
 lr_mod <- 
-  logistic_reg() %>% 
-  set_engine("glm")
+  logistic_reg() %>% #<<
+  set_engine("glm") #<<
 ```
 ---
 ## Step 2 設定建模流程workflow
 
-workflow將建模 (model)與資料前處理方法 (recipe)串成單一工作流程workflow
+將建模 (model，從step 1來的)與資料前處理方法 (recipe，從前處理來的)串成單一工作流程workflow
 
 ```{r}
 lr_wflow <- 
-  workflow() %>% 
-  add_model(lr_mod) %>% 
-  add_recipe(gen_recipe)
+  workflow() %>% #<<
+  add_model(lr_mod) %>% #<<
+  add_recipe(gen_recipe)#<<
 lr_wflow
 ```
+
 ---
 ## Step 3 訓練模型
 
-使用剛剛串起來的工作流程，加上`fit()`函數，完成建模，並用`pull_workflow_fit()`與`tidy()`呈現建模結果，注意這裡也是只能用**訓練組資料**`DM_train`
+- 使用剛剛串起來的工作流程，加上`fit()`函數，完成建模
 
 ```{r}
 lr_fit <- 
   lr_wflow %>% 
-  fit(data=DM_train)
-
-lr_fit %>% 
-  pull_workflow_fit() %>% 
-  tidy()
+  fit(data=DM_train) #<<
 ```
+
+---
+## Step 3 訓練模型
+
+- 使用剛剛串起來的工作流程，加上`fit()`函數，完成建模
+```{r}
+lr_fit <- 
+  lr_wflow %>% 
+  fit(data=DM_train) 
+```
+
+- 用`pull_workflow_fit()`與`tidy()`呈現建模結果，注意這裡也是只能用**訓練組資料**`DM_train`
+
+```{r eval=FALSE}
+lr_fit %>% 
+  pull_workflow_fit() %>% #<<
+  tidy() #<<
+```
+```{r echo=FALSE}
+knitr::kable(head(lr_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy()), format = 'html')
+```
+
 ---
 ## Step 4 使用模型與測試組資料驗證模型效能
 
-使用`predict()`函數，用剛剛訓練出來的模型`lr_fit`以及一開始分出的測試組`DM_test`產生預測結果，注意這邊要用測試組資料
+- 剛剛訓練出來的模型`lr_fit`丟入`predict()`函數，指定以一開始分出的測試組`DM_test`產生預測結果
+- 注意這邊**只能用測試組資料**`DM_test`
 
 ```{r}
 lr_pred <- lr_fit %>% 
-  predict(DM_test)
+  predict(DM_test) #<<
+```
+```{r eval=FALSE}
 lr_pred
 ```
-
-將預測結果與答案結合
+```{r echo=FALSE}
+knitr::kable(head(lr_pred), format = 'html')
+```
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+- 通常會直接將`predict()`函數預測結果與真實答案結合
+- 答案為**測試組資料**`DM_test`中的diabetes欄位
+- 將預測結果丟入`bind_cols()`，並指定與答案直接結合
 
 ```{r}
 lr_pred <- lr_fit %>%
   predict(DM_test) %>% 
-  bind_cols(DM_test %>% select(diabetes)) 
+  bind_cols(DM_test %>% select(diabetes)) #<<
+```
+```{r eval=FALSE}
 lr_pred
 ```
-
-使用`accuracy()`函數，輸入預測結果與真實答案計算正確率
+```{r echo=FALSE}
+knitr::kable(head(lr_pred), format = 'html')
+```
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+使用`accuracy()`函數，輸入剛剛整合的**預測結果**與**真實答案**計算正確率
 
 ```{r}
 lr_pred %>% 
-  accuracy(truth = diabetes, 
-          .pred_class)
+  accuracy(truth = diabetes, #<<
+          .pred_class)#<<
 ```
 
-但很多時候我們需要Area under the ROC curve，此時我們需要的不是直接pos或neg的結果，我們需要的是連續性的預測數值，這邊可將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
+---
+## Step 4 使用模型與測試組資料驗證模型效能
+
+- 很多時候我們需要回報**Area under the ROC curve**
+- 此時不能直接採用模型預測pos或neg的結果
+- 需要的連續性的預測數值來畫**ROC curve**
+- 將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
 
 ```{r}
 lr_pred <- lr_fit %>%
   predict(DM_test,
-          type = "prob")%>% 
+          type = "prob")%>% #<<
   bind_cols(DM_test %>% select(diabetes)) 
+```
+```{r eval=FALSE}
 lr_pred
 ```
-
-
-得到各組預測值後，可用`roc_curve()`畫ROC curve
-```{r}
+```{r echo=FALSE}
+knitr::kable(head(lr_pred), format = 'html')
+```
+---
+## Step 4 使用模型與測試組資料驗證效能
+將預測結果`lr_pred`丟入`roc_curve()`，加上`autoplot()`畫ROC curve
+```{r,out.height="350px",fig.align='center'}
 lr_pred %>% 
-  roc_curve(truth = diabetes, 
-            .pred_pos) %>% 
-  autoplot()
+  roc_curve(truth = diabetes, #<<
+            .pred_pos) %>% #<<
+  autoplot()#<<
 ```
 
+---
+## Step 4 使用模型與測試組資料驗證效能
 當然也能用`roc_auc()`算Area under the ROC curve
 
-```{r}
+```{r eval=FALSE}
 lr_pred %>% 
+  roc_auc(truth = diabetes, #<<
+          .pred_pos)#<<
+```
+```{r echo=FALSE}
+knitr::kable(lr_pred %>% 
   roc_auc(truth = diabetes, 
-          .pred_pos)
+          .pred_pos), 
+  format = 'html')
+```
+---
+## Step 5 解釋模型
+- 以迴歸為例，參數即可解釋各變數與模型的關係
+- 用`pull_workflow_fit()`與`tidy()`呈現建模結果
+
+```{r eval=FALSE}
+lr_fit %>% 
+  pull_workflow_fit() %>% #<<
+  tidy() #<<
+```
+```{r echo=FALSE}
+knitr::kable(lr_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy(), format = 'html')
 ```
 
-
-以上就是使用邏輯迴歸建立模型與效能測試流程，可以發現完全沒有調整任何參數，因基本邏輯迴歸不用調參數。
+---
+# 完成
+以上就是使用**邏輯迴歸**建立模型與效能測試流程，可以發現完全沒有調整任何參數，因基本邏輯迴歸不用調參數。
 
 ---
 class: inverse, center, middle
@@ -454,9 +671,10 @@ class: inverse, center, middle
 
 因為模型參數調整需要一直不斷建立模型與測試，所以設定平行處理會快一些，`tidymodels`套組支援平行處理，細節可參考[官方文件](https://tune.tidymodels.org/articles/extras/optimizations.html)
 
-```{r}
-all_cores <- parallel::detectCores(logical = FALSE)
+```{r message=F,warning=F}
+library(parallel)
 library(doParallel)
+all_cores <- detectCores(logical = FALSE)
 cl <- makePSOCKcluster(all_cores)
 registerDoParallel(cl)
 ```
@@ -464,15 +682,12 @@ registerDoParallel(cl)
 ---
 ## Step 2 設定用隨機森林建立模型以及要調整的參數
 
-這邊以隨機森林為例，用`rand_forest()`函數與`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法。
+- 用`rand_forest()`函數指定要建立隨機森林模型
+- 用`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，沒裝過`ranger`套件的話需要先裝
+  - "permutation": Consider a variable important if it has a positive effect on the prediction performance. (Mean decrease accuracy)
+  - "impurity": Gini index for classification 
+- 因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法
 
-在隨機森林`rand_forest()`函數中，可設定幾個參數，說明如下:
-
-- mtry: 在切割節點時，隨機抽取n個特徵，並從中選最適合的特徵當作節點
-- min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
-- trees: 建模要用幾棵樹
-
-在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用交叉驗證法(Cross Validation)來調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
 ```{r eval=F}
 install.packages("ranger")
 ```
@@ -481,542 +696,424 @@ install.packages("ranger")
 rf_mod <- 
   rand_forest(mtry = tune(), min_n = tune(), 
               trees = 1000) %>% 
-  set_engine("ranger") %>% 
+  set_engine("ranger",
+             importance= "permutation") %>% 
   set_mode("classification")
+```
 
+---
+## Step 2 設定用隨機森林建立模型以及要調整的參數
+
+在隨機森林`rand_forest()`函數中，可設定幾個參數，說明如下:
+
+- mtry: 在切割節點時，隨機抽取n個特徵，並從中選最適合的特徵當作節點
+- min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
+- trees: 建模要用幾棵樹
+
+-- 
+
+在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用資料調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
+
+```{r}
+rf_mod <- 
+  rand_forest(mtry = tune(), min_n = tune(),  #<<
+              trees = 1000) %>% #<<
+  set_engine("ranger",
+             importance= "permutation") %>% 
+  set_mode("classification")
+```
+---
+## Step 2 設定用隨機森林建立模型以及要調整的參數
+模型設定完成後，輸出如下
+```{r}
 rf_mod
 ```
 
 ---
 ## Step 3 設定建模流程workflow
 
-建模流程同邏輯迴歸，將模型與資料前處理方法串接成一個工作流程
+建模流程同邏輯迴歸，將模型 (model，從step 2來的)與資料前處理方法(recipe，從前處理來的)串接成一個工作流程
 
 ```{r}
 rf_wflow <- workflow() %>%
-  add_model(rf_mod) %>%
-  add_recipe(gen_recipe)
+  add_model(rf_mod) %>%  #<<
+  add_recipe(gen_recipe) #<<
+rf_wflow
 ```
 
 ---
 ## Step 4 參數調整組資料分割
 
-剛剛有提到我想要調整的參數為mtry以及min_n，調整的方法為交叉驗證法(Cross Validation)，這邊用`tidymodels`官網的圖來說明架構
-
-```{r echo=F}
+- 剛剛有提到要以資料調整的參數**mtry**以及**min_n**
+- 首先將所有資料分成測試組訓練組，也就是本篇文章一開始做的切割
+- 為了調整參數，再切訓練組資料，分成的**調整訓練**組以及**調整測試**組。
+```{r echo=F,out.height="350px",fig.align='center'}
 knitr::include_graphics("https://www.tidymodels.org/start/resampling/img/resampling.svg")
 ```
 [圖片來源](https://www.tidymodels.org/start/resampling/)
 
-在圖中，首先將所有資料分成測試組訓練組，也就是本篇文章一開始做的切割，為了調整參數，我們會再切訓練組的資料，做為測試各參數效能的**調整訓練**以及**調整測試**。
 
-切割**參數調整組**有很多種方法，可以用**bootstrap**法隨機抽，也可使用這邊的**交叉驗證**範例，交叉驗證的概念如下圖的下半部
 
-```{r echo=F}
+---
+## Step 4 參數調整組資料分割
+- 切割**參數調整組**有很多種方法，可以用**bootstrap**法隨機抽，也可使用這邊的**交叉驗證**(Cross Validation)範例
+- 圖片下半部為5-fold CV 的示意圖
+- 每份資料都會被拿來當作**調整訓練**以及**調整測試**組
+- 經過幾次測試後，用**調整測試**組的效能來決定一組最佳參數
+
+```{r echo=F,out.height="350px",fig.align='center'}
 knitr::include_graphics("https://www.frontiersin.org/files/Articles/411217/fmicb-09-02393-HTML/image_m/fmicb-09-02393-g002.jpg")
 ```
 [圖片來源](https://doi.org/10.3389/fmicb.2018.02393)
 
-圖片下半部為5-fold Cross Validation的示意圖，可以看到每份資料都會被拿來當作**調整訓練**以及**調整測試**組，經過幾次測試後，用**調整測試**組的效能來決定一組最佳參數。
 
-這邊我們使用10-fold Cross Validation為例，先用`vfold_cv()`函數，設定分割基準為**訓練組**，要分10份`v=10`，分割時一樣要注意糖尿病的比例不能差太多
+---
+## Step 4 參數調整組資料分割
+- 使用10-fold CV 為例，先用`vfold_cv()`函數
+  - 設定分割基準為**訓練組**`DM_train`
+  - 要分10份`v=10`
+  - 分割時要注意糖尿病的比例不能差太多，因此設為分組依據 `strata = diabetes`
 
 ```{r}
 set.seed(345)
-folds <- vfold_cv(DM_train, v = 10,
-                  strata = diabetes)
+folds <- vfold_cv(DM_train, #<<
+                  v = 10, #<<
+                  strata = diabetes) #<<
 folds
 ```
 ---
 ## Step 5 調整參數
 
-完成分割後，可將之前的建模流程串接至`tune_grid()`函數，這個函數可以設定參數調整的方法，首先是調整要用的**參數調整組資料**`resamples = folds`，要測試幾組參數` grid = 50`，測試時要用什麼效能評估方式，這邊設定為Area under the ROC curve `metrics = metric_set(roc_auc)`。因為要重複訓練測試多次，因此這程式碼執行會需要一些時間。
+- 將Step 3所建立的建模流程`rf_wflow`串接至`tune_grid()`函數，設定參數調整的方法
+  - 設定切割好的**參數調整組**  `resamples = folds`
+  - 要測試幾組參數   `grid = 50`
+  - 測試時要用什麼效能評估方式，設定為Area under the ROC curve `metrics = metric_set(roc_auc)`
+- 因為要重複訓練測試多次，因此這程式碼執行會需要一些時間。
 
-```{r}
+```{r message=F,warning=F}
 rf_res <- 
   rf_wflow %>% 
+  tune_grid(
+    resamples = folds,#<<
+    grid = 50,#<<
+    metrics = metric_set(roc_auc),#<<
+    control=control_resamples(save_pred = TRUE)
+    )
+```
+
+---
+## Step 5 調整參數
+執行完後，可用`collect_metrics()`查看各參數效能
+```{r eval=FALSE}
+rf_res %>%
+  collect_metrics()#<<
+```
+```{r echo=FALSE}
+knitr::kable(rf_res %>%
+  collect_metrics() %>% head(), format = 'html')
+```
+---
+## Step 5 調整參數
+也可畫個圖呈現參數調整對效能的影響，由圖可知在這個範例中min_n越大效能越好
+
+```{r,out.height="350px",fig.align='center'}
+rf_res %>%
+  collect_metrics() %>%
+  mutate(mtry=factor(mtry)) %>%
+  ggplot(aes(min_n, mean, color = mtry)) + 
+  geom_line(size=1)
+```
+---
+## Step 5 調整參數
+搭配`show_best()`函數可呈現Area under the ROC curve最優的幾組參數
+
+```{r eval=FALSE}
+rf_res %>%
+  show_best("roc_auc")#<<
+```
+```{r echo=FALSE}
+knitr::kable(rf_res %>%
+  show_best("roc_auc"), format = 'html')
+```
+
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+
+- 使用最佳參數(意即Area under the ROC curve最高的一組參數)來建立最終模型
+- 將剛剛調參數的結果`rf_res`輸入`select_best()`函數，選出最好的一組參數`best_rf`
+
+```{r}
+best_rf <- rf_res %>%
+  select_best("roc_auc")#<<
+```
+```{r eval=FALSE}
+best_rf
+```
+```{r echo=FALSE}
+knitr::kable(head(best_rf), format = 'html')
+```
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+將Step 3 建立的工作流程輸入`finalize_workflow()`函數，並指定要用剛剛選出的最佳參數`best_rf`，建立一個**最終建模流程**
+
+```{r}
+final_wflow <- 
+  rf_wflow %>% 
+  finalize_workflow(best_rf)#<<
+
+final_wflow
+```
+---
+## Step 6 使用最佳參數與訓練組資料建立最終模型
+**最終建模流程** `final_wflow`建立後，即可用`fit()`建模，注意這邊用的是完整的訓練資料`DM_train`
+
+```{r}
+final_rf_model <- 
+  final_wflow %>%
+  fit(data = DM_train) #<<
+
+final_rf_model
+```
+
+---
+## Step 7 用測試組資料驗證最終效能
+
+- 將剛剛訓練出來的模型`final_rf_model`輸入`predict()`函數
+- 並指定使用一開始分出的測試組`DM_test`產生預測結果
+- 注意要用**測試組資料**
+
+```{r}
+rf_pred <- final_rf_model %>% 
+  predict(DM_test)#<<
+```
+```{r eval=FALSE}
+rf_pred
+```
+```{r echo=FALSE}
+knitr::kable(head(rf_pred), format = 'html')
+```
+
+---
+## Step 7 用測試組資料驗證最終效能
+
+- 通常會直接將`predict()`函數預測結果與真實答案結合
+- 答案為**測試組資料**`DM_test`中的diabetes欄位
+- 將預測結果丟入`bind_cols()`，並指定與答案直接結合
+```{r}
+rf_pred <- final_rf_model %>%
+  predict(DM_test) %>% 
+  bind_cols(DM_test %>% select(diabetes)) #<<
+```
+```{r eval=FALSE}
+rf_pred
+```
+```{r echo=FALSE}
+knitr::kable(head(rf_pred), format = 'html')
+```
+---
+## Step 7 用測試組資料驗證最終效能
+使用預測結果與真實答案計算正確率
+```{r eval=FALSE}
+rf_pred %>% 
+  accuracy(truth = diabetes, #<<
+          .pred_class) #<<
+```
+```{r echo=FALSE}
+knitr::kable(rf_pred %>% 
+  accuracy(truth = diabetes, 
+          .pred_class),
+  format = 'html')
+```
+---
+## Step 7 用測試組資料驗證最終效能
+- 很多時候我們需要回報**Area under the ROC curve**
+- 此時不能直接採用模型預測pos或neg的結果
+- 需要的連續性的預測數值來畫**ROC curve**
+- 將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
+
+```{r}
+rf_pred <- final_rf_model %>%
+  predict(DM_test,
+          type = "prob")%>% #<<
+  bind_cols(DM_test %>% select(diabetes)) 
+```
+```{r eval=FALSE}
+rf_pred
+```
+```{r echo=FALSE}
+knitr::kable(head(rf_pred), format = 'html')
+```
+---
+## Step 7 用測試組資料驗證最終效能
+將預測結果`lr_pred`丟入`roc_curve()`，加上`autoplot()`畫ROC curve
+```{r,out.height="350px",fig.align='center'}
+rf_pred %>% 
+  roc_curve(truth = diabetes, #<<
+            .pred_pos) %>% #<<
+  autoplot()#<<
+```
+---
+## Step 7 用測試組資料驗證最終效能
+當然也能用`roc_auc()`算Area under the ROC curve
+```{r eval=FALSE}
+rf_pred %>% 
+  roc_auc(truth = diabetes, #<<
+          .pred_pos)#<<
+```
+```{r echo=FALSE}
+knitr::kable(rf_pred %>% 
+  roc_auc(truth = diabetes, #<<
+          .pred_pos), format = 'html')
+```
+
+---
+## Step 8 解釋模型
+- 查看最終模型`final_rf_model`中，各變數的重要性
+- 用`pull_workflow_fit()`將模型資訊取出
+- 丟入`vip()`查看各變數重要性
+```{r warning=F, message=F,out.height="350px",fig.align='center'}
+library(vip)
+final_rf_model %>%
+  pull_workflow_fit() %>%
+  vi()
+```
+---
+## Step 8 解釋模型
+- 查看最終模型`final_rf_model`中，各變數的重要性
+- 用`pull_workflow_fit()`將模型資訊取出
+- 丟入`vip()`查看各變數重要性
+```{r warning=F, message=F,out.height="350px",fig.align='center'}
+library(vip)
+final_rf_model %>%
+  pull_workflow_fit() %>%
+  vip()
+```
+---
+# 完成
+以上就是使用**隨機森林**建立模型、調整參數以及與效能測試流程，多了使用交叉驗證法調整參數的步驟。
+
+
+
+---
+class: inverse, center, middle
+
+# 正紅的XGBoost模型建立、參數調整與效能評估範例
+---
+## XGBoost不分步驟，一次搞定 (1/3)
+
+```{r}
+#install.packages("xgboost")
+xgb_mod <- 
+  boost_tree(mtry = tune(), #<<
+             min_n = tune(), #<<
+              trees = 1000) %>% #<<
+  set_engine("xgboost",#<<
+             importance= "permutation") %>% #<<
+  set_mode("classification")
+xgb_wflow <- workflow() %>%
+  add_model(xgb_mod) %>%  
+  add_recipe(gen_recipe) 
+xgb_res <- 
+  xgb_wflow %>% 
   tune_grid(
     resamples = folds,
     grid = 50,
     metrics = metric_set(roc_auc),
     control=control_resamples(save_pred = TRUE)
     )
-
 ```
-
-
-執行完後，可用`collect_metrics()`查看各參數效能
-
-```{r}
-rf_res %>%
-  collect_metrics()
-```
-
-也可畫個圖呈現參數調整對效能的影響，由圖可知在這個範例中min_n越大效能越好
-
-```{r}
-rf_res %>%
-  collect_metrics() %>%
-  mutate(mtry = factor(mtry)) %>%
-  ggplot(aes(min_n, mean, color = mtry)) + 
-  geom_line(size=1) +
-  scale_x_log10(labels = scales::label_number()) 
-```
-
-搭配`show_best()`函數可呈現Area under the ROC curve最優的幾組參數
-
-```{r}
-rf_res %>%
-  show_best("roc_auc")
-```
-
-
 ---
-## Step 6 使用最佳參數與訓練組資料建立最終模型
-
-在完成參數調整後，我們會使用最佳參數(意即Area under the ROC curve最高的一組參數)來建立最終模型，用`select_best()`函數可選出最好的一組參數`best_rf`
+## XGBoost不分步驟，一次搞定 (2/3)
 
 ```{r}
-best_rf <- rf_res %>%
+best_xgb <- xgb_res %>%
   select_best("roc_auc")
-best_rf
-```
-
-為了將參數節合至原有的建模流程，可用`finalize_workflow()`函數輸入剛剛選出的最佳參數`best_rf`，建立一個**最終建模流程**
-
-```{r}
 final_wflow <- 
-  rf_wflow %>% 
-  finalize_workflow(best_rf)
-
-final_wflow
-```
-
-**最終建模流程**建立後，即可用`fit()`建模，注意這邊用的是完整的訓練資料`DM_train`
-
-```{r}
-final_rf_model <- 
+  xgb_wflow %>% 
+  finalize_workflow(best_xgb)
+final_xgb_model <- 
   final_wflow %>%
   fit(data = DM_train) 
-
-final_rf_model
-```
-
----
-## Step 7 用測試組資料驗證最終模型效能
-
-使用`predict()`函數，用剛剛訓練出來的模型`final_rf_model`以及一開始分出的測試組`DM_test`產生預測結果，注意這邊要用測試組資料
-
-```{r}
-rf_pred <- final_rf_model %>% 
-  predict(DM_test)
-rf_pred
-```
-
-將預測結果與答案結合
-```{r}
-rf_pred <- final_rf_model %>%
-  predict(DM_test) %>% 
-  bind_cols(DM_test %>% select(diabetes)) 
-rf_pred
-```
-
-使用預測結果與真實答案計算正確率
-```{r}
-rf_pred %>% 
-  accuracy(truth = diabetes, 
-          .pred_class)
-```
-
-但很多時候我們需要Area under the ROC curve，此時我們需要的不是直接pos或neg的結果，我們需要的是連續性的預測數值，這邊可將`predict()`函數的`type`參數設定為prob，即回傳各組預測值
-
-```{r}
-rf_pred <- final_rf_model %>%
+xgb_pred <- final_xgb_model %>%
   predict(DM_test,
           type = "prob")%>% 
   bind_cols(DM_test %>% select(diabetes)) 
-rf_pred
+```
+---
+## XGBoost不分步驟，一次搞定 (3/3)
+
+```{r,out.height="400px",fig.align='center'}
+xgb_pred %>% 
+  roc_curve(truth = diabetes, 
+            .pred_pos) %>% 
+  autoplot()
+```
+---
+class: inverse, center, middle
+# 上課教的SVM模型建立、參數調整與效能評估範例
+---
+## SVM不分步驟，一次搞定 (1/3)
+
+```{r}
+#install.packages("kernlab")
+svm_mod <- 
+  svm_rbf(cost=tune(),#<<
+          rbf_sigma=tune(),#<<
+          margin=tune()) %>% #<<
+  set_engine("kernlab",#<<
+             importance= "permutation") %>% #<<
+  set_mode("classification")
+svm_wflow <- workflow() %>%
+  add_model(svm_mod) %>%  
+  add_recipe(gen_recipe) 
+svm_res <- 
+  svm_wflow %>% 
+  tune_grid(
+    resamples = folds,
+    grid = 50,
+    metrics = metric_set(roc_auc),
+    control=control_resamples(save_pred = TRUE)
+    )
+```
+---
+## SVM不分步驟，一次搞定 (2/3)
+
+```{r}
+best_svm <- svm_res %>%
+  select_best("roc_auc")
+final_wflow <- 
+  svm_wflow %>% 
+  finalize_workflow(best_svm)
+final_svm_model <- 
+  final_wflow %>%
+  fit(data = DM_train) 
+svm_pred <- final_svm_model %>%
+  predict(DM_test,
+          type = "prob")%>% 
+  bind_cols(DM_test %>% select(diabetes)) 
 ```
 
+---
+## SVM不分步驟，一次搞定 (3/3)
 
-得到各組預測值後，可用`roc_curve()`畫ROC curve
-```{r}
-rf_pred %>% 
+```{r,out.height="400px",fig.align='center'}
+svm_pred %>% 
   roc_curve(truth = diabetes, 
             .pred_pos) %>% 
   autoplot()
 ```
 
-當然也能用`roc_auc()`算Area under the ROC curve
-```{r}
-rf_pred %>% 
-  roc_auc(truth = diabetes, 
-          .pred_pos)
-```
-
-
-以上就是使用隨機森林建立模型、調整參數以及與效能測試流程，多了使用交叉驗證法調整參數的步驟。
-
-
 ---
-# Hello World
+# tidymodels總結
 
-Install the **xaringan** package from [Github](https://github.com/yihui/xaringan):
+- [官方說明文件](https://www.tidymodels.org/)完整
+- 建模、調參數、預測流程架構清楚
+- 目前支援21大類模型，可透過[模型清單](https://www.tidymodels.org/find/parsnip/)查找，自行替換模型
+- 不知道每個模型有何參數可調？一樣可透過[參數清單](https://www.tidymodels.org/find/parsnip/#model-args)查找
+- 不知道參數意義？了解各模型的原理還是很重要的！
 
-```{r eval=FALSE, tidy=FALSE}
-devtools::install_github("yihui/xaringan")
-```
 
---
 
-You are recommended to use the [RStudio IDE](https://www.rstudio.com/products/rstudio/), but you do not have to.
 
-- Create a new R Markdown document from the menu `File -> New File -> R Markdown -> From Template -> Ninja Presentation`;<sup>1</sup>
 
---
 
-- Click the `Knit` button to compile it;
-
---
-
-- or use the [RStudio Addin](https://rstudio.github.io/rstudioaddins/)<sup>2</sup> "Infinite Moon Reader" to live preview the slides (every time you update and save the Rmd document, the slides will be automatically reloaded in RStudio Viewer.
-
-.footnote[
-[1] 中文用户请看[这份教程](http://slides.yihui.org/xaringan/zh-CN.html)
-
-[2] See [#2](https://github.com/yihui/xaringan/issues/2) if you do not see the template or addin in RStudio.
-]
-
----
-background-image: url(`r xaringan:::karl`)
-background-position: 50% 50%
-class: center, bottom, inverse
-
-# You only live once!
-
----
-
-# Hello Ninja
-
-As a presentation ninja, you certainly should not be satisfied by the "Hello World" example. You need to understand more about two things:
-
-1. The [remark.js](https://remarkjs.com) library;
-
-1. The **xaringan** package;
-
-Basically **xaringan** injected the chakra of R Markdown (minus Pandoc) into **remark.js**. The slides are rendered by remark.js in the web browser, and the Markdown source needed by remark.js is generated from R Markdown (**knitr**).
-
----
-
-# remark.js
-
-You can see an introduction of remark.js from [its homepage](https://remarkjs.com). You should read the [remark.js Wiki](https://github.com/gnab/remark/wiki) at least once to know how to
-
-- create a new slide (Markdown syntax<sup>*</sup> and slide properties);
-
-- format a slide (e.g. text alignment);
-
-- configure the slideshow;
-
-- and use the presentation (keyboard shortcuts).
-
-It is important to be familiar with remark.js before you can understand the options in **xaringan**.
-
-.footnote[[*] It is different with Pandoc's Markdown! It is limited but should be enough for presentation purposes. Come on... You do not need a slide for the Table of Contents! Well, the Markdown support in remark.js [may be improved](https://github.com/gnab/remark/issues/142) in the future.]
-
----
-background-image: url(`r xaringan:::karl`)
-background-size: cover
-class: center, bottom, inverse
-
-# I was so happy to have discovered remark.js!
-
----
-class: inverse, middle, center
-
-# Using xaringan
-
----
-
-# xaringan
-
-Provides an R Markdown output format `xaringan::moon_reader` as a wrapper for remark.js, and you can use it in the YAML metadata, e.g.
-
-```yaml
----
-title: "A Cool Presentation"
-output:
-  xaringan::moon_reader:
-    yolo: true
-    nature:
-      autoplay: 30000
----
-```
-
-See the help page `?xaringan::moon_reader` for all possible options that you can use.
-
----
-
-# remark.js vs xaringan
-
-Some differences between using remark.js (left) and using **xaringan** (right):
-
-.pull-left[
-1. Start with a boilerplate HTML file;
-
-1. Plain Markdown;
-
-1. Write JavaScript to autoplay slides;
-
-1. Manually configure MathJax;
-
-1. Highlight code with `*`;
-
-1. Edit Markdown source and refresh browser to see updated slides;
-]
-
-.pull-right[
-1. Start with an R Markdown document;
-
-1. R Markdown (can embed R/other code chunks);
-
-1. Provide an option `autoplay`;
-
-1. MathJax just works;<sup>*</sup>
-
-1. Highlight code with `{{}}`;
-
-1. The RStudio addin "Infinite Moon Reader" automatically refreshes slides on changes;
-]
-
-.footnote[[*] Not really. See next page.]
-
----
-
-# Math Expressions
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &#36;\alpha+\beta$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
-
-```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
-
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
-
----
-
-# R Code
-
-```{r comment='#'}
-# a boring regression
-fit = lm(dist ~ 1 + speed, data = cars)
-coef(summary(fit))
-dojutsu = c('地爆天星', '天照', '加具土命', '神威', '須佐能乎', '無限月読')
-grep('天', dojutsu, value = TRUE)
-```
-
-
----
-
-# Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r}
-knitr::kable(head(iris), format = 'html')
-```
-
----
-
-# HTML Widgets
-
-I have not thoroughly tested HTML widgets against **xaringan**. Some may work well, and some may not. It is a little tricky.
-
-Similarly, the Shiny mode (`runtime: shiny`) does not work. I might get these issues fixed in the future, but these are not of high priority to me. I never turn my presentation into a Shiny app. When I need to demonstrate more complicated examples, I just launch them separately. It is convenient to share slides with other people when they are plain HTML/JS applications.
-
-See the next page for two HTML widgets.
-
----
-
-```{r out.width='100%', fig.height=6, eval=require('leaflet')}
-library(leaflet)
-leaflet() %>% addTiles() %>% setView(-93.65, 42.0285, zoom = 17)
-```
-
----
-
-```{r eval=require('DT'), tidy=FALSE}
-DT::datatable(
-  head(iris, 10),
-  fillContainer = FALSE, options = list(pageLength = 8)
-)
-```
-
----
-
-# Some Tips
-
-- When you use the "Infinite Moon Reader" addin in RStudio, your R session will be blocked by default. You can click the red button on the right of the console to stop serving the slides, or use the _daemonized_ mode so that it does not block your R session. To do the latter, you can set the option
-
-    ```r
-    options(servr.daemon = TRUE)
-    ```
-    
-    in your current R session, or in `~/.Rprofile` so that it is applied to all future R sessions. I do the latter by myself.
-    
-    To know more about the web server, see the [**servr**](https://github.com/yihui/servr) package.
-
---
-
-- Do not forget to try the `yolo` option of `xaringan::moon_reader`.
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        yolo: true
-    ```
-
----
-
-# Some Tips
-
-- Slides can be automatically played if you set the `autoplay` option under `nature`, e.g. go to the next slide every 30 seconds in a lightning talk:
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          autoplay: 30000
-    ```
-
---
-
-- A countdown timer can be added to every page of the slides using the `countdown` option under `nature`, e.g. if you want to spend one minute on every page when you give the talk, you can set:
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          countdown: 60000
-    ```
-
-    Then you will see a timer counting down from `01:00`, to `00:59`, `00:58`, ... When the time is out, the timer will continue but the time turns red.
-    
----
-
-# Some Tips
-
-- The title slide is created automatically by **xaringan**, but it is just another remark.js slide added before your other slides.
-
-    The title slide is set to `class: center, middle, inverse, title-slide` by default. You can change the classes applied to the title slide with the `titleSlideClass` option of `nature` (`title-slide` is always applied).
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          titleSlideClass: [top, left, inverse]
-    ```
-    
---
-
-- If you'd like to create your own title slide, disable **xaringan**'s title slide with the `seal = FALSE` option of `moon_reader`.
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        seal: false
-    ```
-
----
-
-# Some Tips
-
-- There are several ways to build incremental slides. See [this presentation](https://slides.yihui.org/xaringan/incremental.html) for examples.
-
-- The option `highlightLines: true` of `nature` will highlight code lines that start with `*`, or are wrapped in `{{ }}`, or have trailing comments `#<<`;
-
-    ```yaml
-    output:
-      xaringan::moon_reader:
-        nature:
-          highlightLines: true
-    ```
-
-    See examples on the next page.
-
----
-
-# Some Tips
-
-
-.pull-left[
-An example using a leading `*`:
-
-    ```r
-    if (TRUE) {
-    ** message("Very important!")
-    }
-    ```
-Output:
-```r
-if (TRUE) {
-* message("Very important!")
-}
-```
-
-This is invalid R code, so it is a plain fenced code block that is not executed.
-]
-
-.pull-right[
-An example using `{{}}`:
-
-````
-`r ''````{r tidy=FALSE}
-if (TRUE) {
-*{{ message("Very important!") }}
-}
-```
-````
-Output:
-```{r tidy=FALSE}
-if (TRUE) {
-{{ message("Very important!") }}
-}
-```
-
-It is valid R code so you can run it. Note that `{{}}` can wrap an R expression of multiple lines.
-]
-
----
-
-# Some Tips
-
-An example of using the trailing comment `#<<` to highlight lines:
-
-````markdown
-`r ''````{r tidy=FALSE}
-library(ggplot2)
-ggplot(mtcars) + 
-  aes(mpg, disp) + 
-  geom_point() +   #<<
-  geom_smooth()    #<<
-```
-````
-
-Output:
-
-```{r tidy=FALSE, eval=FALSE}
-library(ggplot2)
-ggplot(mtcars) + 
-  aes(mpg, disp) + 
-  geom_point() +   #<<
-  geom_smooth()    #<<
-```
