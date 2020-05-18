@@ -3,7 +3,7 @@
   <head>
     <title>Case Studies in Data Mining with R</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Yi-Ju Tseng" />
+    <meta name="author" content="曾意儒 Yi-Ju Tseng" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
   </head>
@@ -12,12 +12,17 @@
 class: center, middle, inverse, title-slide
 
 # Case Studies in Data Mining with R
-### Yi-Ju Tseng
+### 曾意儒 Yi-Ju Tseng
 ### Chung Gung University
 ### 2020/05/18
 
 ---
 
+class: inverse, center, middle
+
+[yjtseng.info/talk/datamining](https://yjtseng.info/talk/datamining)
+
+---
 class: inverse, center, middle
 # Reviews
 ---
@@ -41,7 +46,7 @@ class: inverse, center, middle
 
 ---
 
-## How to use RStudio for the first time
+## How to use RStudio 
 .pull-left[
 4 Blocks in RStudio：
 - Source editor  -&gt; edit the codes here
@@ -94,13 +99,7 @@ install.packages("tidymodels")
 ```
 
 ```
-## Registered S3 method overwritten by 'xts':
-##   method     from
-##   as.zoo.xts zoo
-```
-
-```
-## ── Attaching packages ───────────────────────────────────── tidymodels 0.1.0 ──
+## ── Attaching packages ─────────────────────────── tidymodels 0.1.0 ──
 ```
 
 ```
@@ -114,39 +113,7 @@ install.packages("tidymodels")
 ```
 
 ```
-## Warning: package 'broom' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'dials' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'scales' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'parsnip' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'recipes' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'rsample' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'tibble' was built under R version 3.6.2
-```
-
-```
-## Warning: package 'tune' was built under R version 3.6.2
-```
-
-```
-## ── Conflicts ──────────────────────────────────────── tidymodels_conflicts() ──
+## ── Conflicts ────────────────────────────── tidymodels_conflicts() ──
 ## x purrr::discard()  masks scales::discard()
 ## x dplyr::filter()   masks stats::filter()
 ## x dplyr::lag()      masks stats::lag()
@@ -157,6 +124,8 @@ install.packages("tidymodels")
 ---
 ## Pipe %&gt;%
 
+- 處理資料流的方法
+- 將資料（輸出）丟到後方函數中
 ---
 
 class: inverse, center, middle
@@ -353,6 +322,7 @@ print(tableone)
 ##   diabetes = pos (%)      130 (33.2)
 ```
 - [tableone使用說明](https://cran.r-project.org/web/packages/tableone/vignettes/introduction.html)
+
 ---
 ## 單變量分析 - 依outcome分組
 
@@ -381,7 +351,7 @@ print(tableone)
 ```
 
 ---
-## 單變量分析 - 產生方便貼到Excel的表格
+## 單變量分析 - 貼到Excel的表格
 
 
 ```r
@@ -426,14 +396,17 @@ tableone&lt;-
 
 打開Excel貼上
 &lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcel.png" height="400px" style="display: block; margin: auto;" /&gt;
+
 ---
 ## 單變量分析 - Excel處理步驟 (4/7)
 打開Excel-&gt;資料-&gt;資料剖析功能
 &lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelFormat.png" height="400px" style="display: block; margin: auto;" /&gt;
+
 ---
 ## 單變量分析 - Excel處理步驟 (5/7)
 設定使用分隔符號切割資料
 &lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelDel.png" height="400px" style="display: block; margin: auto;" /&gt;
+
 ---
 ## 單變量分析 - Excel處理步驟 (6/7)
 用空格當作分隔符號，並將文字辨識符號設為雙引號
@@ -444,6 +417,7 @@ tableone&lt;-
 ## 單變量分析 - Excel處理步驟 (7/7)
 完成！！
 &lt;img src="https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneFinal.png" height="400px" style="display: block; margin: auto;" /&gt;
+
 ---
 class: inverse, center, middle
 
@@ -501,11 +475,11 @@ DM_test&lt;- testing(splits)
 ---
 ## 訓練組、測試組資料分割
 
-- 不管要不要調參數，都需要分割訓練組與測試組
+- 不管要不要調參數，都需要分割**訓練組**與**測試組**
 - 用`initial_split()`函數將資料分成訓練組與測試組
-  - 第一個參數放資料
-  - 第二個參數`prop`放訓練組測試組比例
-  - 第三個參數`strata`放分組抽樣依據，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
+  - 第一個參數放資料`PimaIndiansDiabetes2`
+  - 第二個參數`prop`放訓練組測試組比例`(3/4)`
+  - 第三個參數`strata`放分組抽樣依據`diabetes`，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
 - 切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
 
 
@@ -517,6 +491,7 @@ splits&lt;- initial_split(PimaIndiansDiabetes2,
 *DM_train&lt;- training(splits)
 *DM_test&lt;- testing(splits)
 ```
+
 ---
 ## 訓練組、測試組資料分割
 
@@ -585,7 +560,6 @@ class: inverse, center, middle
 - 前處理包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等
 
 --
-
 - 首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`
   - 注意這邊只能用**訓練組資料**，不能用全部的資料
   - 公式：用`~`前方的`diabetes`當outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features)
@@ -715,18 +689,18 @@ lr_wflow
 ```
 
 ```
-## ══ Workflow ═══════════════════════════════════════════════════════════════════
+## ══ Workflow ═════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: logistic_reg()
 ## 
-## ── Preprocessor ───────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## ● step_dummy()
 ## ● step_zv()
 ## ● step_normalize()
 ## 
-## ── Model ──────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────
 ## Logistic Regression Model Specification (classification)
 ## 
 ## Computational engine: glm
@@ -776,51 +750,51 @@ lr_fit %&gt;%
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.9399004 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1575646 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -5.9651752 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9640371 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1597350 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -6.0352290 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pregnant &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2232861 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1971191 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.1327476 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2573203 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3490945 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1920579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8176525 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0691173 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; glucose &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0707970 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1950975 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.4885222 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0494165 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1948386 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.3860817 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000001 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pressure &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.1158912 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1619846 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.7154459 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4743336 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0038956 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1589881 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0245027 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9804516 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; triceps &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.0126884 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2015624 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.0629500 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9498063 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1655423 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2039447 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8117017 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4169628 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; insulin &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.0925636 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1746867 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.5298836 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.5961927 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.1612772 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1746670 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9233411 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3558295 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 
 - 剛剛訓練出來的模型`lr_fit`丟入`predict()`函數，指定以一開始分出的測試組`DM_test`產生預測結果
 - 注意這邊**只能用測試組資料**`DM_test`
@@ -848,13 +822,13 @@ lr_pred
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
@@ -862,7 +836,7 @@ lr_pred
 &lt;/tbody&gt;
 &lt;/table&gt;
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 - 通常會直接將`predict()`函數預測結果與真實答案結合
 - 答案為**測試組資料**`DM_test`中的diabetes欄位
 - 將預測結果丟入`bind_cols()`，並指定與答案直接結合
@@ -891,10 +865,6 @@ lr_pred
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
@@ -902,8 +872,12 @@ lr_pred
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
@@ -912,7 +886,7 @@ lr_pred
 &lt;/tbody&gt;
 &lt;/table&gt;
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 使用`accuracy()`函數，輸入剛剛整合的**預測結果**與**真實答案**計算正確率
 
 
@@ -926,11 +900,11 @@ lr_pred %&gt;%
 ## # A tibble: 1 x 3
 ##   .metric  .estimator .estimate
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-## 1 accuracy binary         0.814
+## 1 accuracy binary         0.825
 ```
 
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 
 - 很多時候我們需要回報**Area under the ROC curve**
 - 此時不能直接採用模型預測pos或neg的結果
@@ -958,39 +932,39 @@ lr_pred
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.1802343 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8197657 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1785513 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8214487 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.6479680 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.3520320 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.8500444 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1499556 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9668423 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0331577 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.0682963 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9317037 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0591382 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9408618 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.1247665 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8752335 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9421452 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0578548 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.1262743 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8737257 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9389266 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0610734 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1311079 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8688921 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 ---
-## Step 4 使用模型與測試組資料驗證效能
+## Step 4 使用測試組資料驗證效能
 將預測結果`lr_pred`丟入`roc_curve()`，加上`autoplot()`畫ROC curve
 
 ```r
@@ -1003,7 +977,7 @@ lr_pred %&gt;%
 &lt;img src="DataMining_files/figure-html/unnamed-chunk-57-1.png" height="350px" style="display: block; margin: auto;" /&gt;
 
 ---
-## Step 4 使用模型與測試組資料驗證效能
+## Step 4 使用測試組資料驗證效能
 當然也能用`roc_auc()`算Area under the ROC curve
 
 
@@ -1024,7 +998,7 @@ lr_pred %&gt;%
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9206731 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9072115 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1052,66 +1026,66 @@ lr_fit %&gt;%
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.9399004 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1575646 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -5.9651752 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9640371 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1597350 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -6.0352290 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pregnant &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2232861 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1971191 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.1327476 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2573203 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3490945 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1920579 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8176525 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0691173 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; glucose &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0707970 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1950975 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.4885222 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0494165 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1948386 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.3860817 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000001 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pressure &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.1158912 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1619846 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.7154459 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4743336 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0038956 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1589881 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0245027 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9804516 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; triceps &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.0126884 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2015624 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.0629500 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9498063 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1655423 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2039447 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8117017 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4169628 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; insulin &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.0925636 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1746867 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.5298836 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.5961927 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.1612772 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1746670 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9233411 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3558295 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; mass &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4998571 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2111084 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.3677750 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0178954 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5546995 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2187121 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.5362087 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0112060 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pedigree &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.3092734 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1663840 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.8587933 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0630564 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2894106 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1640091 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.7646014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0776308 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; age &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.3915963 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2083075 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.8798951 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0601224 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2510670 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1997081 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2571697 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2086922 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1143,8 +1117,8 @@ registerDoParallel(cl)
 
 - 用`rand_forest()`函數指定要建立隨機森林模型
 - 用`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，沒裝過`ranger`套件的話需要先裝
-  - "permutation": Consider a variable important if it has a positive effect on the prediction performance. (Mean decrease accuracy)
-  - "impurity": Gini index for classification 
+  - `permutation`: effect on the prediction performance (Mean decrease accuracy)
+  - `impurity`: Gini index for classification 
 - 因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法
 
 
@@ -1171,8 +1145,7 @@ rf_mod &lt;-
 - min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
 - trees: 建模要用幾棵樹
 
--- 
-
+--
 在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用資料調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
 
 
@@ -1220,18 +1193,18 @@ rf_wflow
 ```
 
 ```
-## ══ Workflow ═══════════════════════════════════════════════════════════════════
+## ══ Workflow ═════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: rand_forest()
 ## 
-## ── Preprocessor ───────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## ● step_dummy()
 ## ● step_zv()
 ## ● step_normalize()
 ## 
-## ── Model ──────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────
 ## Random Forest Model Specification (classification)
 ## 
 ## Main Arguments:
@@ -1343,57 +1316,57 @@ rf_res %&gt;%
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8219883 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0271489 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8248187 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0280118 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8283772 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0283969 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8017105 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8191579 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0240486 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8095088 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0246020 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8059503 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0246762 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0275482 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8025409 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8194942 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0241123 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0286831 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8102953 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8233567 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0224259 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8092105 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0233824 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0288690 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1434,49 +1407,49 @@ rf_res %&gt;%
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8164415 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0211091 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8164327 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0225916 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 33 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8136023 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8298567 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0216921 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0289917 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8129415 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8283772 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0210267 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0283969 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 38 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8126287 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8281550 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0230154 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0280554 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8276871 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0290739 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8271404 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0298687 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1505,8 +1478,8 @@ best_rf
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1524,24 +1497,24 @@ final_wflow
 ```
 
 ```
-## ══ Workflow ═══════════════════════════════════════════════════════════════════
+## ══ Workflow ═════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: rand_forest()
 ## 
-## ── Preprocessor ───────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## ● step_dummy()
 ## ● step_zv()
 ## ● step_normalize()
 ## 
-## ── Model ──────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────
 ## Random Forest Model Specification (classification)
 ## 
 ## Main Arguments:
-##   mtry = 3
+##   mtry = 2
 ##   trees = 1000
-##   min_n = 30
+##   min_n = 33
 ## 
 ## Engine-Specific Arguments:
 ##   importance = permutation
@@ -1562,32 +1535,32 @@ final_rf_model
 ```
 
 ```
-## ══ Workflow [trained] ═════════════════════════════════════════════════════════
+## ══ Workflow [trained] ═══════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: rand_forest()
 ## 
-## ── Preprocessor ───────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## ● step_dummy()
 ## ● step_zv()
 ## ● step_normalize()
 ## 
-## ── Model ──────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────
 ## Ranger result
 ## 
 ## Call:
-##  ranger::ranger(formula = formula, data = data, mtry = ~3L, num.trees = ~1000,      min.node.size = ~30L, importance = ~"permutation", num.threads = 1,      verbose = FALSE, seed = sample.int(10^5, 1), probability = TRUE) 
+##  ranger::ranger(formula = formula, data = data, mtry = ~2L, num.trees = ~1000,      min.node.size = ~33L, importance = ~"permutation", num.threads = 1,      verbose = FALSE, seed = sample.int(10^5, 1), probability = TRUE) 
 ## 
 ## Type:                             Probability estimation 
 ## Number of trees:                  1000 
 ## Sample size:                      295 
 ## Number of independent variables:  8 
-## Mtry:                             3 
-## Target node size:                 30 
+## Mtry:                             2 
+## Target node size:                 33 
 ## Variable importance mode:         permutation 
 ## Splitrule:                        gini 
-## OOB prediction error (Brier s.):  0.1572738
+## OOB prediction error (Brier s.):  0.157679
 ```
 
 ---
@@ -1620,13 +1593,13 @@ rf_pred
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
@@ -1664,10 +1637,6 @@ rf_pred
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
@@ -1675,8 +1644,12 @@ rf_pred
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
@@ -1705,7 +1678,7 @@ rf_pred %&gt;%
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8041237 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8247423 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1737,33 +1710,33 @@ rf_pred
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.3573604 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.6426396 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3973083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6026917 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.5301730 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4698270 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.6717796 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.3282204 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9651058 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0348942 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.1584287 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8415713 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1754237 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8245763 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.1206967 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8793033 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9276385 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0723615 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 0.1809000 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8191000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9217307 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0782693 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; neg &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.1970172 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8029828 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; pos &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -1801,7 +1774,7 @@ rf_pred %&gt;%
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9139423 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8947115 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1823,14 +1796,14 @@ final_rf_model %&gt;%
 ## # A tibble: 8 x 2
 ##   Variable Importance
 ##   &lt;chr&gt;         &lt;dbl&gt;
-## 1 glucose    0.0452  
-## 2 age        0.0210  
-## 3 insulin    0.0196  
-## 4 mass       0.00865 
-## 5 pregnant   0.00522 
-## 6 triceps    0.00281 
-## 7 pedigree   0.00200 
-## 8 pressure  -0.000999
+## 1 glucose  0.0424    
+## 2 age      0.0227    
+## 3 mass     0.0113    
+## 4 insulin  0.0110    
+## 5 pregnant 0.00713   
+## 6 triceps  0.00545   
+## 7 pedigree 0.00376   
+## 8 pressure 0.00000833
 ```
 ---
 ## Step 8 解釋模型
@@ -1956,6 +1929,13 @@ final_wflow &lt;-
 final_svm_model &lt;- 
   final_wflow %&gt;%
   fit(data = DM_train) 
+```
+
+```
+## maximum number of iterations reached 9.479447e-05 9.47946e-05
+```
+
+```r
 svm_pred &lt;- final_svm_model %&gt;%
   predict(DM_test,
           type = "prob")%&gt;% 
@@ -1983,6 +1963,10 @@ svm_pred %&gt;%
 - 目前支援21大類模型，可透過[模型清單](https://www.tidymodels.org/find/parsnip/)查找，自行替換模型
 - 不知道每個模型有何參數可調？一樣可透過[參數清單](https://www.tidymodels.org/find/parsnip/#model-args)查找
 - 不知道參數意義？了解各模型的原理還是很重要的！
+
+---
+## 訓練/調整與驗證模型效能策略
+&lt;img src="https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&amp;Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" height="500px" style="display: block; margin: auto;" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

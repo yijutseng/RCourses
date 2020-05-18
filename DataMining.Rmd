@@ -1,6 +1,6 @@
 ---
 title: "Case Studies in Data Mining with R"
-author: "Yi-Ju Tseng"
+author: "曾意儒 Yi-Ju Tseng"
 institute: "Chung Gung University"
 date: "2020/05/18"
 output:
@@ -10,6 +10,11 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+---
+class: inverse, center, middle
+
+[yjtseng.info/talk/datamining](https://yjtseng.info/talk/datamining)
+
 ---
 class: inverse, center, middle
 # Reviews
@@ -38,7 +43,7 @@ knitr::include_graphics("https://raw.githubusercontent.com/DHLab-TSENG/emr_slide
 
 ---
 
-## How to use RStudio for the first time
+## How to use RStudio 
 .pull-left[
 4 Blocks in RStudio：
 - Source editor  -> edit the codes here
@@ -100,6 +105,8 @@ library(tidymodels)
 ---
 ## Pipe %>%
 
+- 處理資料流的方法
+- 將資料（輸出）丟到後方函數中
 ---
 
 class: inverse, center, middle
@@ -240,6 +247,7 @@ tableone<-
 print(tableone)
 ```
 - [tableone使用說明](https://cran.r-project.org/web/packages/tableone/vignettes/introduction.html)
+
 ---
 ## 單變量分析 - 依outcome分組
 
@@ -252,7 +260,7 @@ print(tableone)
 ```
 
 ---
-## 單變量分析 - 產生方便貼到Excel的表格
+## 單變量分析 - 貼到Excel的表格
 
 ```{r}
 library(tableone)
@@ -287,18 +295,21 @@ knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/ma
 ```{r echo=FALSE,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcel.png")
 ```
+
 ---
 ## 單變量分析 - Excel處理步驟 (4/7)
 打開Excel->資料->資料剖析功能
 ```{r echo=FALSE,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelFormat.png")
 ```
+
 ---
 ## 單變量分析 - Excel處理步驟 (5/7)
 設定使用分隔符號切割資料
 ```{r echo=FALSE,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneRExcelDel.png")
 ```
+
 ---
 ## 單變量分析 - Excel處理步驟 (6/7)
 用空格當作分隔符號，並將文字辨識符號設為雙引號
@@ -313,6 +324,7 @@ knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/ma
 ```{r echo=FALSE,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://raw.githubusercontent.com/yijutseng/RCourses/master/figures/tableoneFinal.png")
 ```
+
 ---
 class: inverse, center, middle
 
@@ -377,11 +389,11 @@ DM_test<- testing(splits)
 ---
 ## 訓練組、測試組資料分割
 
-- 不管要不要調參數，都需要分割訓練組與測試組
+- 不管要不要調參數，都需要分割**訓練組**與**測試組**
 - 用`initial_split()`函數將資料分成訓練組與測試組
-  - 第一個參數放資料
-  - 第二個參數`prop`放訓練組測試組比例
-  - 第三個參數`strata`放分組抽樣依據，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
+  - 第一個參數放資料`PimaIndiansDiabetes2`
+  - 第二個參數`prop`放訓練組測試組比例`(3/4)`
+  - 第三個參數`strata`放分組抽樣依據`diabetes`，針對此分組個別抽某個比例的人當訓練組，剩下的就當測試組。
 - 切割完後，用`training()`和`testing()`函數將訓練組測試組正式分開。
 
 ```{r}
@@ -392,6 +404,7 @@ splits<- initial_split(PimaIndiansDiabetes2,
 DM_train<- training(splits)#<<
 DM_test<- testing(splits)#<<
 ```
+
 ---
 ## 訓練組、測試組資料分割
 
@@ -441,7 +454,6 @@ class: inverse, center, middle
 - 前處理包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等
 
 --
-
 - 首先使用`recipe()`函數，設定模型訓練公式`diabetes ~ .`以及訓練用資料`DM_train`
   - 注意這邊只能用**訓練組資料**，不能用全部的資料
   - 公式：用`~`前方的`diabetes`當outcome (想要預測的值)，`~`後方的`.`代表其他所有剩下的欄位都當成predictors (又稱variables 或是 features)
@@ -555,7 +567,7 @@ knitr::kable(head(lr_fit %>%
 ```
 
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 
 - 剛剛訓練出來的模型`lr_fit`丟入`predict()`函數，指定以一開始分出的測試組`DM_test`產生預測結果
 - 注意這邊**只能用測試組資料**`DM_test`
@@ -571,7 +583,7 @@ lr_pred
 knitr::kable(head(lr_pred), format = 'html')
 ```
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 - 通常會直接將`predict()`函數預測結果與真實答案結合
 - 答案為**測試組資料**`DM_test`中的diabetes欄位
 - 將預測結果丟入`bind_cols()`，並指定與答案直接結合
@@ -588,7 +600,7 @@ lr_pred
 knitr::kable(head(lr_pred), format = 'html')
 ```
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 使用`accuracy()`函數，輸入剛剛整合的**預測結果**與**真實答案**計算正確率
 
 ```{r}
@@ -598,7 +610,7 @@ lr_pred %>%
 ```
 
 ---
-## Step 4 使用模型與測試組資料驗證模型效能
+## Step 4 使用測試組資料驗證效能
 
 - 很多時候我們需要回報**Area under the ROC curve**
 - 此時不能直接採用模型預測pos或neg的結果
@@ -618,7 +630,7 @@ lr_pred
 knitr::kable(head(lr_pred), format = 'html')
 ```
 ---
-## Step 4 使用模型與測試組資料驗證效能
+## Step 4 使用測試組資料驗證效能
 將預測結果`lr_pred`丟入`roc_curve()`，加上`autoplot()`畫ROC curve
 ```{r,out.height="350px",fig.align='center'}
 lr_pred %>% 
@@ -628,7 +640,7 @@ lr_pred %>%
 ```
 
 ---
-## Step 4 使用模型與測試組資料驗證效能
+## Step 4 使用測試組資料驗證效能
 當然也能用`roc_auc()`算Area under the ROC curve
 
 ```{r eval=FALSE}
@@ -684,8 +696,8 @@ registerDoParallel(cl)
 
 - 用`rand_forest()`函數指定要建立隨機森林模型
 - 用`set_engine("ranger")`設定模型建立演算法為基於`ranger`套件的隨機森林演算法，沒裝過`ranger`套件的話需要先裝
-  - "permutation": Consider a variable important if it has a positive effect on the prediction performance. (Mean decrease accuracy)
-  - "impurity": Gini index for classification 
+  - `permutation`: effect on the prediction performance (Mean decrease accuracy)
+  - `impurity`: Gini index for classification 
 - 因為隨機森林有迴歸版與分類版，因此使用`set_mode("classification")`設定我們要用分類演算法
 
 ```{r eval=F}
@@ -710,8 +722,7 @@ rf_mod <-
 - min_n: 每個節點的最小資料數，如果設為10，當該節點的資料剩十筆或更少時，就不會再切割
 - trees: 建模要用幾棵樹
 
--- 
-
+--
 在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用資料調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
 
 ```{r}
@@ -1112,8 +1123,11 @@ svm_pred %>%
 - 不知道每個模型有何參數可調？一樣可透過[參數清單](https://www.tidymodels.org/find/parsnip/#model-args)查找
 - 不知道參數意義？了解各模型的原理還是很重要的！
 
-
-
+---
+## 訓練/調整與驗證模型效能策略
+```{r echo=F,out.height="500px",fig.align='center'}
+knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
+```
 
 
 
