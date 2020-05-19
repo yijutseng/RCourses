@@ -107,6 +107,27 @@ library(tidymodels)
 
 - 處理資料流的方法
 - 將資料（輸出）丟到後方函數中
+
+---
+## 主角: tidymodels套件
+
+- 由`caret`套件的開發者Max Kuhn所帶領開發的全新建模架構
+- 將建模必要流程包裝成套件組，模組化各必要流程
+- 整合多種建模演算法套件，單一窗口與語法
+- 撰寫邏輯和方法與tidyverse套件組合相同
+- 若熟悉dplyr、ggplot等套件應該蠻好上手
+
+第一次使用前一樣要先安裝
+
+```{r eval=F}
+install.packages("tidymodels")
+```
+
+安裝後即可載入
+```{r eval=F}
+library(tidymodels)
+```
+
 ---
 
 class: inverse, center, middle
@@ -368,10 +389,23 @@ knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/
 ```{r echo=F,out.height="400px",fig.align='center'}
 knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
 ```
+
+
 ---
-## 訓練組、測試組資料分割
+## Pre-Step 1. 訓練組、測試組資料分割
 
 - 不管要不要調參數，都需要分割**訓練組**與**測試組**
+
+```{r echo=F,out.height="350px",fig.align='center'}
+knitr::include_graphics("https://www.tidymodels.org/start/resampling/img/resampling.svg")
+```
+[圖片來源](https://www.tidymodels.org/start/resampling/)
+
+
+
+---
+## Pre-Step 1. 訓練組、測試組資料分割
+
 - 用`initial_split()`函數將資料分成訓練組與測試組
   - 第一個參數放資料`PimaIndiansDiabetes2`
   - 第二個參數`prop`放訓練組測試組比例`(3/4)`
@@ -387,9 +421,8 @@ DM_test<- testing(splits)
 ```
 
 ---
-## 訓練組、測試組資料分割
+## Pre-Step 1. 訓練組、測試組資料分割
 
-- 不管要不要調參數，都需要分割**訓練組**與**測試組**
 - 用`initial_split()`函數將資料分成訓練組與測試組
   - 第一個參數放資料`PimaIndiansDiabetes2`
   - 第二個參數`prop`放訓練組測試組比例`(3/4)`
@@ -406,7 +439,7 @@ DM_test<- testing(splits)#<<
 ```
 
 ---
-## 訓練組、測試組資料分割
+## Pre-Step 1. 訓練組、測試組資料分割
 
 - `initial_split()`函數有隨機的概念
 - 為了讓每次的實驗結果相同，要**在有隨機事件前設定seed** `set.seed()`
@@ -448,7 +481,7 @@ class: inverse, center, middle
 # 開始建模 - 資料前處理
 
 ---
-## 建立資料前處理“食譜”
+## Pre-Step 2. 建立資料前處理“食譜”
 
 - 資料前處理也是建立兩種模型都必須經歷的方法
 - 前處理包括將類別變項轉為虛擬變項(dummy variables)，數值變項取log，數值變項正規化，以及日期資料處理等
@@ -469,7 +502,7 @@ summary(gen_recipe)
 ```
 
 ---
-## 建立資料前處理“食譜”
+## Pre-Step 2. 建立資料前處理“食譜”
 
 完成模型公式與資料設定後，就開始逐一加上想要做的資料前處理方法
 
@@ -488,7 +521,7 @@ summary(gen_recipe)
 ```
 
 ---
-## 建立資料前處理“食譜”
+## Pre-Step 2. 建立資料前處理“食譜”
 還有很多其他的前處理方法：
 - `step_naomit(everything(), skip = TRUE)` 如果沒有在一開始將NA資料刪掉，通常要去除NA值
 - `step_rose(diabetes)` 設定oversampleing或是undersampling，範例用ROSE作為oversampling的演算法
@@ -674,6 +707,24 @@ knitr::kable(lr_fit %>%
 # 完成
 以上就是使用**邏輯迴歸**建立模型與效能測試流程，可以發現完全沒有調整任何參數，因基本邏輯迴歸不用調參數。
 
+--
+
+Pre-Step
+
+1. 分訓練組測試組
+2. 設定資料前處理方法
+
+--
+
+Step
+
+1. 設定模型
+2. 設定工作流程，串聯模型與資料前處理食譜
+3. 建模
+4. 得到預測效能
+5. 解釋模型
+
+
 ---
 class: inverse, center, middle
 
@@ -723,6 +774,7 @@ rf_mod <-
 - trees: 建模要用幾棵樹
 
 --
+
 在這個範例中，我將要建幾棵樹設定為1000，其他兩個參數則是想用資料調整，因此將想調的參數值設為`tune()`，表示這些參數要調，不想在現階段指定。
 
 ```{r}
@@ -1003,7 +1055,25 @@ final_rf_model %>%
 # 完成
 以上就是使用**隨機森林**建立模型、調整參數以及與效能測試流程，多了使用交叉驗證法調整參數的步驟。
 
+--
 
+Pre-Step
+
+1. 分訓練組測試組
+2. 設定資料前處理方法
+
+--
+
+Step
+
+1. **設定平行處理**
+2. 設定模型
+3. 設定工作流程，串聯模型與資料前處理食譜
+4. **切參數訓練組與參數測試組**
+5. **調整參數，得到最佳參數**
+6. **用最佳參數與訓練組建模**
+7. 得到預測效能
+8. 解釋模型
 
 ---
 class: inverse, center, middle
@@ -1129,5 +1199,23 @@ svm_pred %>%
 knitr::include_graphics("https://cdn.jamanetwork.com/ama/content_public/journal/jama/938259/jug190001f2.png?Expires=2147483647&Signature=cU6lP2ZYSdn9MyOakMWobXQF2h6LSPCExTP1q7x74zRH7gDgkRSqshXWADmcQUz0XJVK~aVPK3cb-~shWQ6vd6EF4FwIcR8NBXMlGq1sLDR5dXLwpb~qoEYzXvg03zCz2l0AHmdlFxy4IGYGG3ilBfuPh1SCweskxtaUfsWqGsUcwc6FNo3KjaR9j58eJeZOnBEr6a2OF2m~XlEOnT1W3vaYn2-fuGZLAQR88XcUGWp1LYgc6GnDTO1s7zj5m9mYhlL-CeOaLXQNGrSl6fAvw6LisZW-f2tChvIaDfCd4vuuNw-Q1V6sjm-jgUehMt8wjrc61YW6WqyIC9mF6VGzzg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA")
 ```
 
+---
+## 訓練/調整與驗證模型效能步驟
+
+Pre-Step
+
+1. 分訓練組測試組
+2. 設定資料前處理方法
+
+Step
+
+1. **設定平行處理**
+2. 設定模型
+3. 設定工作流程，串聯模型與資料前處理食譜
+4. **切參數訓練組與參數測試組**
+5. **調整參數，得到最佳參數**
+6. **用最佳參數與訓練組建模**
+7. 得到預測效能
+8. 解釋模型
 
 
