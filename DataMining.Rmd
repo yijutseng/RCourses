@@ -854,6 +854,7 @@ folds
 - 因為要重複訓練測試多次，因此這程式碼執行會需要一些時間。
 
 ```{r message=F,warning=F}
+set.seed(345)
 rf_res <- 
   rf_wflow %>% 
   tune_grid(
