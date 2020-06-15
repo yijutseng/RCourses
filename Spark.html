@@ -29,56 +29,61 @@ class: inverse, center, middle
 
 ## Spark
 
-[R](https://cloud.r-project.org/) : Core (engine)
+[Spark](https://spark.apache.org/) : Analytics engine for large-scale data processing
 
-&lt;img src="https://www.teslarati.com/wp-content/uploads/2018/07/model-3-drivetrain-1.jpg" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="https://d1jnx9ba8s6j9r.cloudfront.net/blog/wp-content/uploads/2018/09/Picture6-2.png" height="400px" style="display: block; margin: auto;" /&gt;
 
-[Source](https://www.teslarati.com/tesla-patent-more-efficient-electric-motors/)
+[Source](https://www.edureka.co/blog/spark-architecture/)
 
 ---
 ## dplyr
 
-[RStudio](https://www.rstudio.com/products/rstudio/download/#download) : IDE (dashboard)
+[dplyr](https://dplyr.tidyverse.org/) : Grammar of data manipulation
 
-&lt;img src="https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/dashboard.jpg" height="400px" style="display: block; margin: auto;" /&gt;
+&lt;img src="https://miro.medium.com/max/3680/1*NXRsFH_12sfj79W-P4qI0Q.png" height="400px" style="display: block; margin: auto;" /&gt;
 
-[Source](https://www.theverge.com/2015/3/19/8260295/tesla-user-interface-redesign-concept)
-
----
-
-## How to use RStudio 
-.pull-left[
-4 Blocks in RStudio：
-- Source editor  -&gt; edit the codes here
-- Console -&gt; get the results here
-]
-.pull-right[
-&lt;/br&gt;
-- Environment/...
-- File/Figure/...
-]
-
-&lt;img src="https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/RStudio.png" height="350px" style="display: block; margin: auto;" /&gt;
-
+[Source](https://towardsdatascience.com/data-manipulation-in-r-with-dplyr-3095e0867f75)
 
 ---
 ## Demo on AWS
 
-Set your own enviroment [Spark Standalone Deployment in AWS](https://spark.rstudio.com/examples/stand-alone-aws/)
+AWS: [Amazon web services](https://aws.amazon.com/tw/), education plan available
 
 &lt;img src="https://spark.rstudio.com/examples/stand-alone-aws/images/deployment/amazon-ec2/spark-sa-setup.png" height="400px" style="display: block; margin: auto;" /&gt;
 
 [Source](https://spark.rstudio.com/examples/stand-alone-aws/)
 
 ---
-## Install and Use Packages
+## Environment setting
+
+1. Lunch AWS EC Instance (EC2) x1, Ubuntu / t2.medium / 20GB +
+2. Open some ports (For Spark, RStudio, and the others)
+3. Install Java
+4. Install Spark
+5. Create AMI and launch 3 EC2 instances with it
+6. Install R
+7. Install RStudio Server and add RStudio user
+8. Install packages
+9. Start the master node and worker nodes
+
+Set your own environment [Spark Standalone Deployment in AWS](https://spark.rstudio.com/examples/stand-alone-aws/)
+
+
+---
+class: inverse, center, middle
+## Connect to RStudio on AWS
+
+http://ec2-18-206-187-19.compute-1.amazonaws.com:8787/
+
+---
+## Run R on Spark
 
 - Install
 
 
 ```r
-*install.packages("tidymodels")
-library(tidymodels)
+*install.packages("sparklyr")
+library(sparklyr)
 ```
 
 --
@@ -88,31 +93,254 @@ library(tidymodels)
 
 
 ```r
-install.packages("tidymodels")  
-*library(tidymodels)
+install.packages("sparklyr")  
+*library(sparklyr)
+```
+
+
+
+---
+## Spark Config
+
+
+```r
+conf &lt;- spark_config()
+conf$spark.executor.memory &lt;- "2GB"
+conf$spark.memory.fraction &lt;- 0.9
+```
+
+
+---
+## Spark Config
+
+
+```r
+sc &lt;- spark_connect(
+* master="spark://ip-172-31-53-198.ec2.internal:7077",
+  version = "2.1.0",
+  config = conf,
+  spark_home = "/home/ubuntu/spark-2.1.0-bin-hadoop2.7/")
+```
+
+---
+class: inverse, center, middle
+# Data Manipulation
+
+---
+## Run R on Spark - data manipulation
+
+Copy data to Spark
+
+
+```r
+library(dplyr)
+library(nycflights13)
+library(ggplot2)
+flights_spark &lt;- copy_to(sc, flights, "flights")
+airlines_spark &lt;- copy_to(sc, airlines, "airlines")
+src_tbls(sc)
 ```
 
 ```
-## -- Attaching packages --------- tidymodels 0.1.0 --
+## [1] "airlines" "flights"
+```
+
+---
+## Run R on Spark - data manipulation
+
+select()
+
+
+```r
+select(flights_spark, year:day, arr_delay, dep_delay)
 ```
 
 ```
-## √ broom     0.5.6      √ recipes   0.1.12
-## √ dials     0.0.7      √ rsample   0.0.7 
-## √ dplyr     1.0.0      √ tibble    3.0.1 
-## √ ggplot2   3.3.1      √ tune      0.1.0 
-## √ infer     0.5.1      √ workflows 0.1.1 
-## √ parsnip   0.1.1      √ yardstick 0.0.6 
-## √ purrr     0.3.4
+## # Source: spark&lt;?&gt; [?? x 5]
+##     year month   day arr_delay dep_delay
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1  2013     1     1        11         2
+##  2  2013     1     1        20         4
+##  3  2013     1     1        33         2
+##  4  2013     1     1       -18        -1
+##  5  2013     1     1       -25        -6
+##  6  2013     1     1        12        -4
+##  7  2013     1     1        19        -5
+##  8  2013     1     1       -14        -3
+##  9  2013     1     1        -8        -3
+## 10  2013     1     1         8        -2
+## # … with more rows
+```
+
+---
+## Run R on Spark - data manipulation
+
+filter()
+
+
+```r
+filter(flights_spark, dep_delay &gt; 1000)
 ```
 
 ```
-## -- Conflicts ------------ tidymodels_conflicts() --
-## x purrr::discard() masks scales::discard()
-## x dplyr::filter()  masks stats::filter()
-## x dplyr::lag()     masks stats::lag()
-## x recipes::step()  masks stats::step()
+## # Source: spark&lt;?&gt; [?? x 19]
+##    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+## 1  2013     1     9      641            900      1301     1242           1530
+## 2  2013     1    10     1121           1635      1126     1239           1810
+## 3  2013     6    15     1432           1935      1137     1607           2120
+## 4  2013     7    22      845           1600      1005     1044           1815
+## 5  2013     9    20     1139           1845      1014     1457           2210
+## # … with 11 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
 ```
+
+---
+## Run R on Spark - data manipulation
+
+arrange()
+
+
+```r
+arrange(flights_spark, desc(dep_delay))
+```
+
+```
+## # Source:     spark&lt;?&gt; [?? x 19]
+## # Ordered by: desc(dep_delay)
+##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+##  1  2013     1     9      641            900      1301     1242           1530
+##  2  2013     6    15     1432           1935      1137     1607           2120
+##  3  2013     1    10     1121           1635      1126     1239           1810
+##  4  2013     9    20     1139           1845      1014     1457           2210
+##  5  2013     7    22      845           1600      1005     1044           1815
+##  6  2013     4    10     1100           1900       960     1342           2211
+##  7  2013     3    17     2321            810       911      135           1020
+##  8  2013     6    27      959           1900       899     1236           2226
+##  9  2013     7    22     2257            759       898      121           1026
+## 10  2013    12     5      756           1700       896     1058           2020
+## # … with more rows, and 11 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;,
+## #   flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;,
+## #   distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
+```
+
+---
+## w/ Spark vs. w/o Spark
+
+
+```r
+system.time(flights_spark %&gt;% 
+              filter(dep_delay==10))
+```
+
+```
+##    user  system elapsed 
+##   0.000   0.000   0.001
+```
+
+
+```r
+system.time(flights %&gt;% 
+              filter(dep_delay==10))
+```
+
+```
+##    user  system elapsed 
+##   0.008   0.000   0.013
+```
+
+---
+class: inverse, center, middle
+# Machine Learning
+
+---
+## Run R on Spark - machine learning
+
+Copy data to spark
+
+
+```r
+iris_spark &lt;- 
+  copy_to(sc, iris, "iris")
+iris_spark
+```
+
+```
+## # Source: spark&lt;iris&gt; [?? x 5]
+##    Sepal_Length Sepal_Width Petal_Length Petal_Width Species
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  
+##  1          5.1         3.5          1.4         0.2 setosa 
+##  2          4.9         3            1.4         0.2 setosa 
+##  3          4.7         3.2          1.3         0.2 setosa 
+##  4          4.6         3.1          1.5         0.2 setosa 
+##  5          5           3.6          1.4         0.2 setosa 
+##  6          5.4         3.9          1.7         0.4 setosa 
+##  7          4.6         3.4          1.4         0.3 setosa 
+##  8          5           3.4          1.5         0.2 setosa 
+##  9          4.4         2.9          1.4         0.2 setosa 
+## 10          4.9         3.1          1.5         0.1 setosa 
+## # … with more rows
+```
+
+
+---
+## Run R on Spark - machine learning
+
+Train random forest model
+
+
+```r
+rf_model &lt;- iris_spark %&gt;%
+  ml_random_forest(Species ~ Petal_Length + Petal_Width, 
+                   type = "classification")
+```
+
+---
+## Run R on Spark - machine learning
+
+Use random forest model to predict species
+
+
+```r
+rf_predict &lt;- 
+  ml_predict(rf_model, iris_spark) %&gt;%
+  ft_string_indexer("Species", "Species_idx") %&gt;%
+  collect
+```
+
+---
+## Run R on Spark - machine learning
+
+Check the prediction results
+
+
+```r
+table(rf_predict$Species_idx, 
+      rf_predict$prediction)
+```
+
+```
+##    
+##      0  1  2
+##   0 49  1  0
+##   1  0 50  0
+##   2  0  0 50
+```
+
+---
+## Links for Demo
+
+- [RStudio Server on AWS](http://ec2-18-206-187-19.compute-1.amazonaws.com:8787/)
+- [Spark master UI](http://ec2-34-204-171-94.compute-1.amazonaws.com:8080/)
+
+---
+## Reference
+
+- [sparklyr](https://spark.rstudio.com/)
+- [Spark](https://spark.apache.org/)
+- [AWS](https://aws.amazon.com/tw/)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

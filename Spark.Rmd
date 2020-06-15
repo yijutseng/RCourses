@@ -22,48 +22,29 @@ class: inverse, center, middle
 
 ## Spark
 
-[R](https://cloud.r-project.org/) : Core (engine)
+[Spark](https://spark.apache.org/) : Analytics engine for large-scale data processing
 
 ```{r echo=FALSE,out.height="400px", fig.align='center'}
-knitr::include_graphics("https://www.teslarati.com/wp-content/uploads/2018/07/model-3-drivetrain-1.jpg")
+knitr::include_graphics("https://d1jnx9ba8s6j9r.cloudfront.net/blog/wp-content/uploads/2018/09/Picture6-2.png")
 ```
 
-[Source](https://www.teslarati.com/tesla-patent-more-efficient-electric-motors/)
+[Source](https://www.edureka.co/blog/spark-architecture/)
 
 ---
 ## dplyr
 
-[RStudio](https://www.rstudio.com/products/rstudio/download/#download) : IDE (dashboard)
+[dplyr](https://dplyr.tidyverse.org/) : Grammar of data manipulation
 
 ```{r echo=FALSE,out.height="400px", fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/dashboard.jpg")
+knitr::include_graphics("https://miro.medium.com/max/3680/1*NXRsFH_12sfj79W-P4qI0Q.png")
 ```
 
-[Source](https://www.theverge.com/2015/3/19/8260295/tesla-user-interface-redesign-concept)
-
----
-
-## How to use RStudio 
-.pull-left[
-4 Blocks in RStudio：
-- Source editor  -> edit the codes here
-- Console -> get the results here
-]
-.pull-right[
-</br>
-- Environment/...
-- File/Figure/...
-]
-
-```{r echo=FALSE,out.height="350px",fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/RStudio.png")
-```
-
+[Source](https://towardsdatascience.com/data-manipulation-in-r-with-dplyr-3095e0867f75)
 
 ---
 ## Demo on AWS
 
-Set your own enviroment [Spark Standalone Deployment in AWS](https://spark.rstudio.com/examples/stand-alone-aws/)
+AWS: [Amazon web services](https://aws.amazon.com/tw/), education plan available
 
 ```{r echo=FALSE,out.height = "400px",fig.align='center'}
 knitr::include_graphics("https://spark.rstudio.com/examples/stand-alone-aws/images/deployment/amazon-ec2/spark-sa-setup.png")
@@ -72,13 +53,35 @@ knitr::include_graphics("https://spark.rstudio.com/examples/stand-alone-aws/imag
 [Source](https://spark.rstudio.com/examples/stand-alone-aws/)
 
 ---
-## Install and Use Packages
+## Environment setting
+
+1. Lunch AWS EC Instance (EC2) x1, Ubuntu / t2.medium / 20GB +
+2. Open some ports (For Spark, RStudio, and the others)
+3. Install Java
+4. Install Spark
+5. Create AMI and launch 3 EC2 instances with it
+6. Install R
+7. Install RStudio Server and add RStudio user
+8. Install packages
+9. Start the master node and worker nodes
+
+Set your own environment [Spark Standalone Deployment in AWS](https://spark.rstudio.com/examples/stand-alone-aws/)
+
+
+---
+class: inverse, center, middle
+## Connect to RStudio on AWS
+
+http://ec2-18-206-187-19.compute-1.amazonaws.com:8787/
+
+---
+## Run R on Spark
 
 - Install
 
 ```{r tidy=FALSE, eval=FALSE}
-install.packages("tidymodels")  #<<
-library(tidymodels)
+install.packages("sparklyr")  #<<
+library(sparklyr)
 ```
 
 --
@@ -87,9 +90,151 @@ library(tidymodels)
 - Use
 
 ```{r tidy=FALSE, eval=FALSE}
-install.packages("tidymodels")  
-library(tidymodels) #<<
+install.packages("sparklyr")  
+library(sparklyr) #<<
 ```
 ```{r echo=F}
-library(tidymodels)
+library(sparklyr)
 ```
+
+
+---
+## Spark Config
+
+```{r tidy=FALSE}
+conf <- spark_config()
+conf$spark.executor.memory <- "2GB"
+conf$spark.memory.fraction <- 0.9
+```
+
+
+---
+## Spark Config
+
+```{r tidy=FALSE}
+sc <- spark_connect(
+  master="spark://ip-172-31-53-198.ec2.internal:7077", #<< 
+  version = "2.1.0",
+  config = conf,
+  spark_home = "/home/ubuntu/spark-2.1.0-bin-hadoop2.7/")
+```
+
+---
+class: inverse, center, middle
+# Data Manipulation
+
+---
+## Run R on Spark - data manipulation
+
+Copy data to Spark
+
+```{r tidy=FALSE, warning=F,message=F}
+library(dplyr)
+library(nycflights13)
+library(ggplot2)
+flights_spark <- copy_to(sc, flights, "flights")
+airlines_spark <- copy_to(sc, airlines, "airlines")
+src_tbls(sc)
+```
+
+---
+## Run R on Spark - data manipulation
+
+select()
+
+```{r tidy=FALSE}
+select(flights_spark, year:day, arr_delay, dep_delay)
+```
+
+---
+## Run R on Spark - data manipulation
+
+filter()
+
+```{r tidy=FALSE}
+filter(flights_spark, dep_delay > 1000)
+```
+
+---
+## Run R on Spark - data manipulation
+
+arrange()
+
+```{r tidy=FALSE}
+arrange(flights_spark, desc(dep_delay))
+```
+
+---
+## w/ Spark vs. w/o Spark
+
+```{r tidy=FALSE}
+system.time(flights_spark %>% 
+              filter(dep_delay==10))
+```
+
+```{r tidy=FALSE}
+system.time(flights %>% 
+              filter(dep_delay==10))
+```
+
+---
+class: inverse, center, middle
+# Machine Learning
+
+---
+## Run R on Spark - machine learning
+
+Copy data to spark
+
+```{r tidy=FALSE}
+iris_spark <- 
+  copy_to(sc, iris, "iris")
+iris_spark
+```
+
+
+---
+## Run R on Spark - machine learning
+
+Train random forest model
+
+```{r tidy=FALSE}
+rf_model <- iris_spark %>%
+  ml_random_forest(Species ~ Petal_Length + Petal_Width, 
+                   type = "classification")
+```
+
+---
+## Run R on Spark - machine learning
+
+Use random forest model to predict species
+
+```{r tidy=FALSE}
+rf_predict <- 
+  ml_predict(rf_model, iris_spark) %>%
+  ft_string_indexer("Species", "Species_idx") %>%
+  collect
+```
+
+---
+## Run R on Spark - machine learning
+
+Check the prediction results
+
+```{r tidy=FALSE}
+table(rf_predict$Species_idx, 
+      rf_predict$prediction)
+```
+
+---
+## Links for Demo
+
+- [RStudio Server on AWS](http://ec2-18-206-187-19.compute-1.amazonaws.com:8787/)
+- [Spark master UI](http://ec2-34-204-171-94.compute-1.amazonaws.com:8080/)
+
+---
+## Reference
+
+- [sparklyr](https://spark.rstudio.com/)
+- [Spark](https://spark.apache.org/)
+- [AWS](https://aws.amazon.com/tw/)
