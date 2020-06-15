@@ -1,0 +1,95 @@
+---
+title: "sparklyr: R + Spark"
+author: "曾意儒 Yi-Ju Tseng"
+institute: "Chung Gung University"
+date: "2020/06/16"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse, center, middle
+
+[yjtseng.info/course/sparklyr](https://yjtseng.info/course/sparklyr)
+
+---
+class: inverse, center, middle
+# Reviews
+---
+
+## Spark
+
+[R](https://cloud.r-project.org/) : Core (engine)
+
+```{r echo=FALSE,out.height="400px", fig.align='center'}
+knitr::include_graphics("https://www.teslarati.com/wp-content/uploads/2018/07/model-3-drivetrain-1.jpg")
+```
+
+[Source](https://www.teslarati.com/tesla-patent-more-efficient-electric-motors/)
+
+---
+## dplyr
+
+[RStudio](https://www.rstudio.com/products/rstudio/download/#download) : IDE (dashboard)
+
+```{r echo=FALSE,out.height="400px", fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/dashboard.jpg")
+```
+
+[Source](https://www.theverge.com/2015/3/19/8260295/tesla-user-interface-redesign-concept)
+
+---
+
+## How to use RStudio 
+.pull-left[
+4 Blocks in RStudio：
+- Source editor  -> edit the codes here
+- Console -> get the results here
+]
+.pull-right[
+</br>
+- Environment/...
+- File/Figure/...
+]
+
+```{r echo=FALSE,out.height="350px",fig.align='center'}
+knitr::include_graphics("https://raw.githubusercontent.com/DHLab-TSENG/emr_slide/master/emr_package-figure/RStudio.png")
+```
+
+
+---
+## Demo on AWS
+
+Set your own enviroment [Spark Standalone Deployment in AWS](https://spark.rstudio.com/examples/stand-alone-aws/)
+
+```{r echo=FALSE,out.height = "400px",fig.align='center'}
+knitr::include_graphics("https://spark.rstudio.com/examples/stand-alone-aws/images/deployment/amazon-ec2/spark-sa-setup.png")
+```
+
+[Source](https://spark.rstudio.com/examples/stand-alone-aws/)
+
+---
+## Install and Use Packages
+
+- Install
+
+```{r tidy=FALSE, eval=FALSE}
+install.packages("tidymodels")  #<<
+library(tidymodels)
+```
+
+--
+
+
+- Use
+
+```{r tidy=FALSE, eval=FALSE}
+install.packages("tidymodels")  
+library(tidymodels) #<<
+```
+```{r echo=F}
+library(tidymodels)
+```
