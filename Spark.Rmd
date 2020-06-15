@@ -13,7 +13,7 @@ output:
 ---
 class: inverse, center, middle
 
-[yjtseng.info/course/sparklyr](https://yjtseng.info/course/sparklyr)
+[yjtseng.info/course/spark](https://yjtseng.info/course/spark)
 
 ---
 class: inverse, center, middle
